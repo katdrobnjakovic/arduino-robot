@@ -1,7 +1,7 @@
 /**************************************************
 ****************************
 *
-* Names: Craig Bryan 6965144
+* Names: Craig Bryan
 *        Kat Drobnjakovic
 *
 * Course Code: SEG 4145
@@ -98,7 +98,6 @@ void loop() {
 *
 *************************************************************************/ 
 void displayBlink() {
-  doublePrint("6002764", 7, "6965144", 7);
   digitalWrite(BOARD_LED, LOW);
   
   for(int i = 0; i < 5; i++) {
