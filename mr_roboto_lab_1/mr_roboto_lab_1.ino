@@ -68,24 +68,10 @@ void setup() {
 }
 
 void loop() {
-  doublePrint("6002764", 7, "6965144", 7);
-  delay(1000);
-  moveForward(2000);
-  delay(1000);
-  moveBackward(2000);
-  turnLeft(360);
-  moveForward(2000);
-  turnRight(360);
-  moveForward(2000);
- 
-  /*turnRight(180); 
-  delay(1000);
-  turnLeft(180);  
-  delay(1000);*/
-  /*turnRight(90);
-  delay(5000);
-  turnLeft(90);
-  delay(5000);*/
+  displayBlink();
+  path1();
+  path2();
+  
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -114,6 +100,8 @@ void loop() {
 *
 *************************************************************************/ 
 void displayBlink() {
+  delay(1000);
+  doublePrint("6002764", 7, "6965144", 7);
   digitalWrite(BOARD_LED, LOW);
   
   for(int i = 0; i < 5; i++) {
@@ -350,6 +338,7 @@ void right() {
 void fullStop() {
   analogWrite(LEFT_MOTOR, STOP);
   analogWrite(RIGHT_MOTOR, STOP); 
+  singlePrint("Stopped", 7);
 }
 
 /////////////////////////////////////////////////////////////////////////
