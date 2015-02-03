@@ -251,9 +251,14 @@ void path2() {
 *
 *
 *************************************************************************/ 
-void forward() {
-  analogWrite(LEFT_MOTOR, LEFT_FORWARD);
-  analogWrite(RIGHT_MOTOR, RIGHT_FORWARD);
+void forward(int time) {
+  int t = 0;
+  while(t < time) {
+    analogWrite(LEFT_MOTOR, LEFT_FORWARD);
+    analogWrite(RIGHT_MOTOR, RIGHT_FORWARD);
+    t = incrementDelay(10);
+    analogWrite(LEFT_MOTOR, STOP);
+    t = incrementDelay(10);
 }
 
 /************************************************************************
@@ -354,6 +359,11 @@ void right() {
 void fullStop() {
   analogWrite(LEFT_MOTOR, STOP);
   analogWrite(RIGHT_MOTOR, STOP); 
+}
+
+void incrementDelay(int time) {
+  delay(time);
+  return time;
 }
 
 /////////////////////////////////////////////////////////////////////////
