@@ -368,6 +368,8 @@ void fullStop() {
 *
 *************************************************************************/ 
 void moveForward(int duration) {
+  doublePrint("Moving", 6, "forward", 7);
+
   int t = 0;
 
   while(t < duration) {
@@ -400,6 +402,7 @@ void moveForward(int duration) {
 *
 *************************************************************************/ 
 void moveBackward(int duration) {
+  doublePrint("Moving", 6, "backward", 8);
   int t = 0;
 
   while(t < duration) {
@@ -432,8 +435,9 @@ void moveBackward(int duration) {
 *
 *
 *************************************************************************/ 
-void turnLeft(int deg){
- int t = 0;
+void turnLeft(int deg) {
+  doublePrint("Turning", 7, "left", 4);
+  int t = 0;
 
   while(t < deg*LEFT_MS_PER_DEG) {
     left();
@@ -465,8 +469,9 @@ void turnLeft(int deg){
 *
 *
 *************************************************************************/ 
-void turnRight(int deg){
- int t = 0;
+void turnRight(int deg) {
+  doublePrint("Turning", 7, "right", 5);
+  int t = 0;
 
   while(t < deg*RIGHT_MS_PER_DEG) {
     right();
