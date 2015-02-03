@@ -36,7 +36,7 @@
 #define LEFT_MS_PER_DEG 10.5
 
 // LCD CONSTANTS
-int lcd_pin_number = 18;
+int lcd_pin_number = 19;
 SoftwareSerial LCD(0, lcd_pin_number);
 
 // LCD COMMAND HEXS
@@ -60,7 +60,7 @@ void setup() {
   //initialize board light pin
   pinMode(BOARD_LED, OUTPUT);
   
-  //Initialize lcd stuff
+  //Initialize lcd 
   LCD.begin(9600); //open serial port to LCD screen with baud at 9600
   
   //Initialized serial port for debug
@@ -68,7 +68,16 @@ void setup() {
 }
 
 void loop() {
-  path1();
+  doublePrint("6002764", 7, "6965144", 7);
+  delay(1000);
+  moveForward(2000);
+  delay(1000);
+  moveBackward(2000);
+  turnLeft(360);
+  moveForward(2000);
+  turnRight(360);
+  moveForward(2000);
+ 
   /*turnRight(180); 
   delay(1000);
   turnLeft(180);  
@@ -590,10 +599,10 @@ void doublePrint(char* wordOne, int lengthOne, char* wordTwo, int lengthTwo) {
   int spacerOne = (15-lengthOne)/2;
   int spacerTwo = (15-lengthTwo)/2;
   
-  placeCursor(spacerOne, 0);
+  placeCursor(0, spacerOne);
   lcdPrint(wordOne);
-  placeCursor(spacerTwo, 1);
-  lcdPrint(wordOne);
+  placeCursor(1, spacerTwo);
+  lcdPrint(wordTwo);
 }
 
 /************************************************************************
