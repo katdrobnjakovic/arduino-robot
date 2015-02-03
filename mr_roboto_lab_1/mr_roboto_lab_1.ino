@@ -256,11 +256,10 @@ void path2() {
 *
 *************************************************************************/ 
 void forward(5000) {
-  for(int i=0; i <= 5000; i++) {
+  for(int i=0; i <= 5000; i=i+) {
     analogWrite(LEFT_MOTOR, LEFT_FORWARD);
     delay(10);
     analogWrite(RIGHT_MOTOR, RIGHT_FORWARD);
-    delay(10);
   }
 }
 
