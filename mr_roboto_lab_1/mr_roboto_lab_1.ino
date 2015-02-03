@@ -255,10 +255,10 @@ void path2() {
 *
 *
 *************************************************************************/ 
-void forward(5000) {
+void forward() {
     analogWrite(LEFT_MOTOR, LEFT_FORWARD);
     analogWrite(RIGHT_MOTOR, RIGHT_FORWARD);
-  }
+  
 }
 
 /************************************************************************
