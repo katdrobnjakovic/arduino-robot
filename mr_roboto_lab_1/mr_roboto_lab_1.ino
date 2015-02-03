@@ -134,38 +134,28 @@ void path1() {
    
    //Forward traversal
    delay(3000);
-   forward();
-   delay(5000);
+   moveForward(5000);
    turnLeft(90);
-   forward();
-   delay(5000);
+   moveForward(5000);
    turnRight(90);
-   forward();
-   delay(5000);
+   moveForward(5000);
    turnRight(90);
-   forward();
-   delay(5000);
+   moveForward(5000);
    turnLeft(90);
-   forward();
-   delay(5000);
+   moveForward(5000);
    fullStop();
    delay(5000);
    
    //Backward traversal
-   backward();
-   delay(5000);
+   moveBackward(5000);
    turnRight(90);
-   backward();
-   delay(5000);
+   moveBackward(5000);
    turnLeft(90);
-   backward();
-   delay(5000);
+   moveBackward(5000);
    turnLeft(90);
-   backward();
-   delay(5000); 
+   moveBackward(5000);
    turnRight(90);
-   backward();
-   delay(5000);
+   moveBackward(5000);
    fullStop();
    delay(5000);
 }
@@ -195,38 +185,28 @@ void path2() {
    
    //Forward traversal
    delay(3000);
-   forward();
-   delay(5000);
+   moveForward(5000);
    turnRight(90);
-   forward();
-   delay(5000);
+   moveForward(5000);
    turnLeft(135);
-   forward();
-   delay(5000);
+   moveForward(5000);
    turnRight(135);
-   forward();
-   delay(5000);
+   moveForward(5000);
    turnLeft(90);
-   forward();
-   delay(5000);
+   moveForward(5000);
    fullStop();
    delay(5000);
    
    //Backward traversal
-   backward();
-   delay(5000);
+   moveBackward(5000);
    turnRight(90);
-   backward();
-   delay(5000);
+   moveBackward(5000);
    turnLeft(135);
-   backward();
-   delay(5000);
+   moveBackward(5000);
    turnRight(135);
-   backward();
-   delay(5000);
+   moveBackward(5000);
    turnLeft(90);
-   backward();
-   delay(5000);
+   moveBackward(5000);
    fullStop();
 }
 
@@ -255,9 +235,8 @@ void path2() {
 *
 *************************************************************************/ 
 void forward() {
-    analogWrite(LEFT_MOTOR, LEFT_FORWARD);
-    analogWrite(RIGHT_MOTOR, RIGHT_FORWARD);
-  
+  analogWrite(LEFT_MOTOR, LEFT_FORWARD);
+  analogWrite(RIGHT_MOTOR, RIGHT_FORWARD);
 }
 
 /************************************************************************
@@ -368,6 +347,70 @@ void fullStop() {
 *
 * Name
 * *************
+* moveForward
+*
+* Description
+* *************
+* This causes the robot to move forward for the specified time.
+*
+* Parameters
+* *************
+* int duration - the amount of time the robot should move forward.
+
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/ 
+void moveForward(int duration) {
+  int t = 0;
+
+  while(t < duration) {
+    forward();
+    delay(1);
+    t++;
+  }
+
+  fullStop();
+}
+
+/************************************************************************
+*
+* Name
+* *************
+* moveBackwards
+*
+* Description
+* *************
+* This causes the robot to move backward for the specified time.
+*
+* Parameters
+* *************
+* int duration - the amount of time the robot should move backward.
+
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/ 
+void moveBackward(int duration) {
+  int t = 0;
+
+  while(t < duration) {
+    backward();
+    delay(1);
+    t++;
+  }
+
+  fullStop();
+}
+
+/************************************************************************
+*
+* Name
+* *************
 * turnLeft
 *
 * Description
@@ -386,8 +429,14 @@ void fullStop() {
 *
 *************************************************************************/ 
 void turnLeft(int deg){
-  left();
-  delay(deg*MS_PER_DEG);
+  t = 0;
+
+  while(t < deg*MS_PER_DEG) {
+    left();
+    delay(1);
+    t++;
+  }
+
   fullStop();
 }
 
@@ -413,8 +462,14 @@ void turnLeft(int deg){
 *
 *************************************************************************/ 
 void turnRight(int deg){
-  right();
-  delay(deg*MS_PER_DEG);
+  t = 0;
+
+  while(t < deg*MS_PER_DEG) {
+    right();
+    delay(1);
+    t++;
+  }
+
   fullStop();
 }
 
