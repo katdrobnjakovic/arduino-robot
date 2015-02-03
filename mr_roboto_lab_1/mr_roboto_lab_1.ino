@@ -27,12 +27,13 @@
 // DIRECTION CONSTANTS
 #define LEFT_BACKWARD 10
 #define LEFT_FORWARD 194
-#define RIGHT_BACKWARD 254.5
+#define RIGHT_BACKWARD 191.5
 #define RIGHT_FORWARD 10
 #define STOP 0
 
 // TURN CONSTANTS
-#define MS_PER_DEG 11.95
+#define RIGHT_MS_PER_DEG 11.80
+#define LEFT_MS_PER_DEG 10.5
 
 // LCD CONSTANTS
 int lcd_pin_number = 18;
@@ -67,8 +68,11 @@ void setup() {
 }
 
 void loop() {
-  backward();
-  delay(1);
+  path1();
+  /*turnRight(180); 
+  delay(1000);
+  turnLeft(180);  
+  delay(1000);*/
   /*turnRight(90);
   delay(5000);
   turnLeft(90);
@@ -147,7 +151,7 @@ void path1() {
    delay(5000);
    
    //Backward traversal
-   moveBackward(5000);
+   /**moveBackward(5000);
    turnRight(90);
    moveBackward(5000);
    turnLeft(90);
@@ -157,7 +161,7 @@ void path1() {
    turnRight(90);
    moveBackward(5000);
    fullStop();
-   delay(5000);
+   delay(5000);*/
 }
 
 /************************************************************************
@@ -198,7 +202,7 @@ void path2() {
    delay(5000);
    
    //Backward traversal
-   moveBackward(5000);
+   /*moveBackward(5000);
    turnRight(90);
    moveBackward(5000);
    turnLeft(135);
@@ -207,7 +211,7 @@ void path2() {
    moveBackward(5000);
    turnLeft(90);
    moveBackward(5000);
-   fullStop();
+   fullStop();*/
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -429,9 +433,9 @@ void moveBackward(int duration) {
 *
 *************************************************************************/ 
 void turnLeft(int deg){
-  t = 0;
+ int t = 0;
 
-  while(t < deg*MS_PER_DEG) {
+  while(t < deg*LEFT_MS_PER_DEG) {
     left();
     delay(1);
     t++;
@@ -462,9 +466,9 @@ void turnLeft(int deg){
 *
 *************************************************************************/ 
 void turnRight(int deg){
-  t = 0;
+ int t = 0;
 
-  while(t < deg*MS_PER_DEG) {
+  while(t < deg*RIGHT_MS_PER_DEG) {
     right();
     delay(1);
     t++;
