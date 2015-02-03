@@ -26,10 +26,8 @@
 
 // DIRECTION CONSTANTS
 #define LEFT_BACKWARD 10
-#define LEFT_FORWARD 191.5
-//#define LEFT_FORWARD 251.5
-#define RIGHT_BACKWARD 191.5
-//#define RIGHT_FORWARD 35
+#define LEFT_FORWARD 194
+#define RIGHT_BACKWARD 254.5
 #define RIGHT_FORWARD 10
 #define STOP 0
 
@@ -69,7 +67,8 @@ void setup() {
 }
 
 void loop() {
-  path1();
+  backward();
+  delay(1);
   /*turnRight(90);
   delay(5000);
   turnLeft(90);
