@@ -26,7 +26,7 @@
 
 // DIRECTION CONSTANTS
 #define LEFT_BACKWARD 10
-#define LEFT_FORWARD 189.5
+#define LEFT_FORWARD 191.5
 //#define LEFT_FORWARD 251.5
 #define RIGHT_BACKWARD 191.5
 //#define RIGHT_FORWARD 35
@@ -69,7 +69,11 @@ void setup() {
 }
 
 void loop() {
-  forward();
+  path1();
+  /*turnRight(90);
+  delay(5000);
+  turnLeft(90);
+  delay(5000);*/
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -159,7 +163,7 @@ void path1() {
    delay(5000);
    turnLeft(90);
    backward();
-   delay(5000);
+   delay(5000); 
    turnRight(90);
    backward();
    delay(5000);
@@ -251,9 +255,13 @@ void path2() {
 *
 *
 *************************************************************************/ 
-void forward() {
-  analogWrite(LEFT_MOTOR, LEFT_FORWARD);
-  analogWrite(RIGHT_MOTOR, RIGHT_FORWARD);
+void forward(5000) {
+  for(int i=0; i <= 5000; i++) {
+    analogWrite(LEFT_MOTOR, LEFT_FORWARD);
+    delay(10);
+    analogWrite(RIGHT_MOTOR, RIGHT_FORWARD);
+    delay(10);
+  }
 }
 
 /************************************************************************
