@@ -70,8 +70,9 @@ void setup() {
 void loop() {
   displayBlink();
   path1();
+  path1Reverse();
   path2();
-  
+  path2Reverse();
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -131,34 +132,57 @@ void displayBlink() {
 *
 *************************************************************************/ 
 void path1() {
-   singlePrint("Path 1", 6);
+  singlePrint("Path 1", 6);
    
-   //Forward traversal
-   delay(3000);
-   moveForward(5000);
-   turnLeft(90);
-   moveForward(5000);
-   turnRight(90);
-   moveForward(5000);
-   turnRight(90);
-   moveForward(5000);
-   turnLeft(90);
-   moveForward(5000);
-   fullStop();
-   delay(5000);
-   
-   //Backward traversal
-   /**moveBackward(5000);
-   turnRight(90);
-   moveBackward(5000);
-   turnLeft(90);
-   moveBackward(5000);
-   turnLeft(90);
-   moveBackward(5000);
-   turnRight(90);
-   moveBackward(5000);
-   fullStop();
-   delay(5000);*/
+  delay(3000);
+  moveForward(5000);
+  turnLeft(90);
+  moveForward(5000);
+  turnRight(90);
+  moveForward(5000);
+  turnRight(90);
+  moveForward(5000);
+  turnLeft(90);
+  moveForward(5000);
+  stopRobot();
+  delay(5000);
+}
+
+/************************************************************************
+*
+* Name
+* *************
+* path1Reverse
+*
+* Description
+* *************
+* The first path for lab 1, in reverse.
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/ 
+void path1Reverse() {
+  doublePrint("Path 1", 6, "Reverse", 7);
+
+  delay(3000);
+  moveBackward(5000);
+  turnRight(90);
+  moveBackward(5000);
+  turnLeft(90);
+  moveBackward(5000);
+  turnLeft(90);
+  moveBackward(5000);
+  turnRight(90);
+  moveBackward(5000);
+  stopRobot();
+  delay(5000);
 }
 
 /************************************************************************
@@ -182,33 +206,56 @@ void path1() {
 *
 *************************************************************************/ 
 void path2() {
-   singlePrint("Path 2", 6);
+  singlePrint("Path 2", 6);
    
-   //Forward traversal
-   delay(3000);
-   moveForward(5000);
-   turnRight(90);
-   moveForward(5000);
-   turnLeft(135);
-   moveForward(5000);
-   turnRight(135);
-   moveForward(5000);
-   turnLeft(90);
-   moveForward(5000);
-   fullStop();
-   delay(5000);
-   
-   //Backward traversal
-   /*moveBackward(5000);
-   turnRight(90);
-   moveBackward(5000);
-   turnLeft(135);
-   moveBackward(5000);
-   turnRight(135);
-   moveBackward(5000);
-   turnLeft(90);
-   moveBackward(5000);
-   fullStop();*/
+  delay(3000);
+  moveForward(5000);
+  turnRight(90);
+  moveForward(5000);
+  turnLeft(135);
+  moveForward(5000);
+  turnRight(135);
+  moveForward(5000);
+  turnLeft(90);
+  moveForward(5000);
+  stopRobot();
+  delay(5000);
+}
+
+/************************************************************************
+*
+* Name
+* *************
+* path2Reverse
+*
+* Description
+* *************
+* The second path for lab 1, in reverse.
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/
+void path2Reverse() {
+  doublePrint("Path 2", 6, "Reverse", 7);
+
+  moveBackward(5000);
+  turnRight(90);
+  moveBackward(5000);
+  turnLeft(135);
+  moveBackward(5000);
+  turnRight(135);
+  moveBackward(5000);
+  turnLeft(90);
+  moveBackward(5000);
+  stopRobot();
+  delay(5000);
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -338,7 +385,6 @@ void right() {
 void fullStop() {
   analogWrite(LEFT_MOTOR, STOP);
   analogWrite(RIGHT_MOTOR, STOP); 
-  singlePrint("Stopped", 7);
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -478,6 +524,31 @@ void turnRight(int deg) {
   }
 
   fullStop();
+}
+
+/************************************************************************
+*
+* Name
+* *************
+* stopRobot
+*
+* Description
+* *************
+* This causes the robot to stop completely, and prints a 'stopped' message.
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/ 
+void stopRobot() {
+  fullStop();
+  singlePrint("Stopped", 7);
 }
 
 /////////////////////////////////////////////////////////////////////////
