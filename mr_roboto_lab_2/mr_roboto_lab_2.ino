@@ -19,21 +19,27 @@
 */ 
 
 #include <SoftwareSerial.h>
+#include <Servo.h>
 
 // MOTOR CONSTANTS
 #define LEFT_MOTOR 2
 #define RIGHT_MOTOR 4
 
 // DIRECTION CONSTANTS
-#define LEFT_BACKWARD 10
-#define LEFT_FORWARD 194
-#define RIGHT_BACKWARD 191.5
-#define RIGHT_FORWARD 10
-#define STOP 0
+#define LEFT_BACKWARD 0
+#define LEFT_FORWARD 180
+#define RIGHT_BACKWARD 180
+#define RIGHT_FORWARD 0
+
+
+// SERVO CONSTANTS
+Servo rightServo;
+Servo leftServo;
+boolean isAttached;
 
 // TURN CONSTANTS
-#define RIGHT_MS_PER_DEG 11.80
-#define LEFT_MS_PER_DEG 10.5
+#define RIGHT_MS_PER_DEG 7.89
+#define LEFT_MS_PER_DEG 7.89
 
 // LCD CONSTANTS
 int lcd_pin_number = 19;
@@ -65,10 +71,20 @@ void setup() {
   
   //Initialized serial port for debug
   Serial.begin(9600); 
+  
+
+  
+  
+ 
 }
 
 void loop() {
-
+  displayBlink();
+  stopRobot();
+  path1();
+  path1Reverse();
+  path2();
+  path2Reverse();
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -128,10 +144,132 @@ void displayBlink() {
 *
 *************************************************************************/ 
 void path1() {
-  singlePrint("Moving Path", 11);
+  singlePrint("Path 1", 6);
    
-  //TODO
+  delay(3000);
+  moveForward(5000);
+  turnLeft(90);
+  moveForward(5000);
+  turnRight(90);
+  moveForward(5000);
+  turnRight(90);
+  moveForward(5000);
+  turnLeft(90);
+  moveForward(5000);
+  stopRobot();
+  delay(5000);
 }
+
+/************************************************************************
+*
+* Name
+* *************
+* path1Reverse
+*
+* Description
+* *************
+* The first path for lab 1, in reverse.
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/ 
+void path1Reverse() {
+  doublePrint("Path 1", 6, "Reverse", 7);
+
+  delay(3000);
+  moveBackward(5000);
+  turnRight(90);
+  moveBackward(5000);
+  turnLeft(90);
+  moveBackward(5000);
+  turnLeft(90);
+  moveBackward(5000);
+  turnRight(90);
+  moveBackward(5000);
+  stopRobot();
+  delay(5000);
+}
+
+/************************************************************************
+*
+* Name
+* *************
+* path2
+*
+* Description
+* *************
+* The second path for lab 1.
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/ 
+void path2() {
+  singlePrint("Path 2", 6);
+   
+  delay(3000);
+  moveForward(5000);
+  turnRight(90);
+  moveForward(5000);
+  turnLeft(135);
+  moveForward(5000);
+  turnRight(135);
+  moveForward(5000);
+  turnLeft(90);
+  moveForward(5000);
+  stopRobot();
+  delay(5000);
+}
+
+/************************************************************************
+*
+* Name
+* *************
+* path2Reverse
+*
+* Description
+* *************
+* The second path for lab 1, in reverse.
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/
+void path2Reverse() {
+  doublePrint("Path 2", 6, "Reverse", 7);
+
+  moveBackward(5000);
+  turnRight(90);
+  moveBackward(5000);
+  turnLeft(135);
+  moveBackward(5000);
+  turnRight(135);
+  moveBackward(5000);
+  turnLeft(90);
+  moveBackward(5000);
+  stopRobot();
+  delay(5000);
+}
+
 
 /////////////////////////////////////////////////////////////////////////
 ///////////////////// BASIC MOVEMENT METHODS ////////////////////////////
@@ -158,8 +296,18 @@ void path1() {
 *
 *************************************************************************/ 
 void forward() {
-  analogWrite(LEFT_MOTOR, LEFT_FORWARD);
-  analogWrite(RIGHT_MOTOR, RIGHT_FORWARD);
+  attachServo();
+  rightServo.write(RIGHT_FORWARD);
+  leftServo.write(LEFT_FORWARD);
+}
+
+void attachServo() {
+  if (!isAttached){
+    isAttached = true;
+    rightServo.attach(4);
+  leftServo.attach(2);
+  } 
+  
 }
 
 /************************************************************************
@@ -183,8 +331,9 @@ void forward() {
 *
 *************************************************************************/ 
 void backward() {
-  analogWrite(LEFT_MOTOR, LEFT_BACKWARD);
-  analogWrite(RIGHT_MOTOR, RIGHT_BACKWARD);
+  attachServo();
+  leftServo.write(LEFT_BACKWARD);
+  rightServo.write(RIGHT_BACKWARD);
 }
 
 /************************************************************************
@@ -208,8 +357,9 @@ void backward() {
 *
 *************************************************************************/ 
 void left() {
-  analogWrite(LEFT_MOTOR, LEFT_BACKWARD);
-  analogWrite(RIGHT_MOTOR, RIGHT_FORWARD);
+  attachServo();
+  leftServo.write(LEFT_BACKWARD);
+  rightServo.write(RIGHT_FORWARD);
 }
 
 /************************************************************************
@@ -233,8 +383,9 @@ void left() {
 *
 *************************************************************************/ 
 void right() {
-  analogWrite(LEFT_MOTOR, LEFT_FORWARD);
-  analogWrite(RIGHT_MOTOR, RIGHT_BACKWARD);
+  attachServo();
+  leftServo.write(LEFT_FORWARD);
+  rightServo.write(RIGHT_BACKWARD);
 }
 
 /************************************************************************
@@ -258,8 +409,11 @@ void right() {
 *
 *************************************************************************/ 
 void fullStop() {
-  analogWrite(LEFT_MOTOR, STOP);
-  analogWrite(RIGHT_MOTOR, STOP); 
+  isAttached = false;
+  //leftServo.write(STOP);
+  //rightServo.write(STOP); 
+  leftServo.detach();
+  rightServo.detach(); 
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -290,9 +444,9 @@ void moveForward(int duration) {
   doublePrint("Moving", 6, "forward", 7);
 
   int t = 0;
-
+  forward();
   while(t < duration) {
-    forward();
+   
     delay(1);
     t++;
   }
@@ -323,9 +477,9 @@ void moveForward(int duration) {
 void moveBackward(int duration) {
   doublePrint("Moving", 6, "backward", 8);
   int t = 0;
-
+ backward();
   while(t < duration) {
-    backward();
+   
     delay(1);
     t++;
   }
@@ -357,9 +511,9 @@ void moveBackward(int duration) {
 void turnLeft(int deg) {
   doublePrint("Turning", 7, "left", 4);
   int t = 0;
-
+left();
   while(t < deg*LEFT_MS_PER_DEG) {
-    left();
+    
     delay(1);
     t++;
   }
@@ -391,9 +545,9 @@ void turnLeft(int deg) {
 void turnRight(int deg) {
   doublePrint("Turning", 7, "right", 5);
   int t = 0;
-
+right();
   while(t < deg*RIGHT_MS_PER_DEG) {
-    right();
+    
     delay(1);
     t++;
   }
