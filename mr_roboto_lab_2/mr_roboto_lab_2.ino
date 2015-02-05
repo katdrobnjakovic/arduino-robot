@@ -24,7 +24,11 @@
 #define LEFT_MOTOR 2
 #define RIGHT_MOTOR 4
 
-// DIRECTION CONSTANTS
+// WHEEL SENSOR CONSTANTS
+#define RIGHT_WHEEL_SENSOR
+#define LEFT_WHEEL_SENSOR
+
+// DIRECTION CONSTANTS 
 #define LEFT_BACKWARD 10
 #define LEFT_FORWARD 194
 #define RIGHT_BACKWARD 191.5
@@ -59,6 +63,10 @@ void setup() {
   
   //initialize board light pin
   pinMode(BOARD_LED, OUTPUT);
+
+  //initialize wheel sensor
+  pinMode(RIGHT_WHEEL_SENSOR, OUTPUT);
+  pinMode(LEFT_WHEEL_SENSOR, OUTPUT);
   
   //Initialize lcd 
   LCD.begin(9600); //open serial port to LCD screen with baud at 9600
