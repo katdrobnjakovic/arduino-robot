@@ -26,8 +26,8 @@
 #define RIGHT_MOTOR 4
 
 // WHEEL SENSOR CONSTANTS
-#define RIGHT_WHEEL_SENSOR 28
-#define LEFT_WHEEL_SENSOR 26
+#define RIGHT_WHEEL_SENSOR 26
+#define LEFT_WHEEL_SENSOR 28
 
 // DIRECTION CONSTANTS
 #define LEFT_BACKWARD 0
@@ -70,8 +70,8 @@ void setup() {
   pinMode(BOARD_LED, OUTPUT);
 
   //initialize wheel sensor
-  pinMode(RIGHT_WHEEL_SENSOR, OUTPUT);
-  pinMode(LEFT_WHEEL_SENSOR, OUTPUT);
+  pinMode(RIGHT_WHEEL_SENSOR, INPUT);
+  pinMode(LEFT_WHEEL_SENSOR, INPUT);
   
   //Initialize lcd 
   LCD.begin(9600); //open serial port to LCD screen with baud at 9600
@@ -81,10 +81,14 @@ void setup() {
 }
 
 void loop() {
+   forward();
+  Serial.print("LEFT ");
   Serial.println(readLeftSensor());
-  moveForward(1);
-  Serial.println(readLeftSensor());
-  moveForward(2);
+  Serial.print("RIGHT ");
+  Serial.println(readRightSensor());
+ 
+  delay(5000);
+
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -190,14 +194,7 @@ void forward() {
   leftServo.write(LEFT_FORWARD);
 }
 
-void attachServo() {
-  if (!isAttached){
-    isAttached = true;
-    rightServo.attach(4);
-  leftServo.attach(2);
-  } 
-  
-}
+
 
 /************************************************************************
 *
@@ -642,9 +639,42 @@ void flickerBeat(){
   digitalWrite(BOARD_LED, LOW);
 } 
 
+
+
+
 /////////////////////////////////////////////////////////////////////////
 ///////////////////////// SENSOR METHODS ////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
+
+/************************************************************************
+*
+* Name
+**************
+* 
+*
+* Description
+* *************
+* 
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/ 
+
+
+void attachServo() {
+  if (!isAttached){
+    isAttached = true;
+    rightServo.attach(4);
+  leftServo.attach(2);
+  } 
+}
 
 /************************************************************************
 *
