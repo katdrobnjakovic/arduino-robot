@@ -338,6 +338,21 @@ void moveForward(int duration) {
   fullStop();
 }
 
+void moveTicksForward(int numTicks) {
+  boolean leftReading = readLeftSensor();
+
+  int numTicksLeft = 0;
+
+  forward();
+  while(numTicksLeft < numTicks) {
+    if(leftReading != readLeftSensor()) {
+      numTicksLeft++;
+    }
+  }
+
+  stopRobot();
+}
+
 /************************************************************************
 *
 * Name
