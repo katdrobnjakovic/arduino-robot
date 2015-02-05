@@ -26,8 +26,8 @@
 #define RIGHT_MOTOR 4
 
 // WHEEL SENSOR CONSTANTS
-#define RIGHT_WHEEL_SENSOR
-#define LEFT_WHEEL_SENSOR
+#define RIGHT_WHEEL_SENSOR 28
+#define LEFT_WHEEL_SENSOR 26
 
 // DIRECTION CONSTANTS
 #define LEFT_BACKWARD 0
@@ -81,12 +81,10 @@ void setup() {
 }
 
 void loop() {
-  displayBlink();
-  stopRobot();
-  path1();
-  path1Reverse();
-  path2();
-  path2Reverse();
+  Serial.println(readLeftSensor());
+  moveForward(1);
+  Serial.println(readLeftSensor());
+  moveForward(2);
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -129,7 +127,7 @@ void displayBlink() {
 *
 * Name
 * *************
-* path1
+* path
 *
 * Description
 * *************
@@ -145,8 +143,8 @@ void displayBlink() {
 *
 *
 *************************************************************************/ 
-void path1() {
-  singlePrint("Path 1", 6);
+void path() {
+  singlePrint("Path", 6);
    
   delay(3000);
   moveForward(5000);
@@ -161,117 +159,6 @@ void path1() {
   stopRobot();
   delay(5000);
 }
-
-/************************************************************************
-*
-* Name
-* *************
-* path1Reverse
-*
-* Description
-* *************
-* The first path for lab 1, in reverse.
-*
-* Parameters
-* *************
-* None
-*
-* Returns
-* *************
-* void
-*
-*
-*************************************************************************/ 
-void path1Reverse() {
-  doublePrint("Path 1", 6, "Reverse", 7);
-
-  delay(3000);
-  moveBackward(5000);
-  turnRight(90);
-  moveBackward(5000);
-  turnLeft(90);
-  moveBackward(5000);
-  turnLeft(90);
-  moveBackward(5000);
-  turnRight(90);
-  moveBackward(5000);
-  stopRobot();
-  delay(5000);
-}
-
-/************************************************************************
-*
-* Name
-* *************
-* path2
-*
-* Description
-* *************
-* The second path for lab 1.
-*
-* Parameters
-* *************
-* None
-*
-* Returns
-* *************
-* void
-*
-*
-*************************************************************************/ 
-void path2() {
-  singlePrint("Path 2", 6);
-   
-  delay(3000);
-  moveForward(5000);
-  turnRight(90);
-  moveForward(5000);
-  turnLeft(135);
-  moveForward(5000);
-  turnRight(135);
-  moveForward(5000);
-  turnLeft(90);
-  moveForward(5000);
-  stopRobot();
-  delay(5000);
-}
-
-/************************************************************************
-*
-* Name
-* *************
-* path2Reverse
-*
-* Description
-* *************
-* The second path for lab 1, in reverse.
-*
-* Parameters
-* *************
-* None
-*
-* Returns
-* *************
-* void
-*
-*
-*************************************************************************/
-void path2Reverse() {
-  doublePrint("Path 2", 6, "Reverse", 7);
-
-  moveBackward(5000);
-  turnRight(90);
-  moveBackward(5000);
-  turnLeft(135);
-  moveBackward(5000);
-  turnRight(135);
-  moveBackward(5000);
-  turnLeft(90);
-  moveBackward(5000);
-  stopRobot();
-  delay(5000);
-}
-
 
 /////////////////////////////////////////////////////////////////////////
 ///////////////////// BASIC MOVEMENT METHODS ////////////////////////////
@@ -412,8 +299,6 @@ void right() {
 *************************************************************************/ 
 void fullStop() {
   isAttached = false;
-  //leftServo.write(STOP);
-  //rightServo.write(STOP); 
   leftServo.detach();
   rightServo.detach(); 
 }
@@ -756,6 +641,58 @@ void flickerBeat(){
   delay(10);
   digitalWrite(BOARD_LED, LOW);
 } 
+
+/////////////////////////////////////////////////////////////////////////
+///////////////////////// SENSOR METHODS ////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+/************************************************************************
+*
+* Name
+**************
+* 
+*
+* Description
+* *************
+* 
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/ 
+int readLeftSensor() {
+  digitalRead(LEFT_WHEEL_SENSOR);
+}
+
+/************************************************************************
+*
+* Name
+**************
+* 
+*
+* Description
+* *************
+* 
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/ 
+int readRightSensor() {
+  digitalRead(RIGHT_WHEEL_SENSOR);
+}
 
 /************************************************************************
 *
