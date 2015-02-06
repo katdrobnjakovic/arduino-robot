@@ -34,18 +34,19 @@
 #define LEFT_FORWARD 180
 #define RIGHT_BACKWARD 180
 #define RIGHT_FORWARD 0
-
-// SERVO CONSTANTS
-Servo rightServo;
-Servo leftServo;
-boolean isAttached;
 #define LEFT_STOP 80
 #define RIGHT_STOP 81
+
+// SERVO VARIABLES
+Servo rightServo;
+Servo leftServo;
+boolean isRightAttached;
+boolean isLeftAttached;
 #define THRESHOLD 4
 
-// TURN CONSTANTS
-#define RIGHT_MS_PER_DEG 7.89
-#define LEFT_MS_PER_DEG 7.89
+// TURN AND DISTANCE CONSTANTS
+#define TICKS_PER_DEGREE 16 
+#define TICKS_PER_TILE 256
 
 // LCD CONSTANTS
 int lcd_pin_number = 19;
@@ -65,10 +66,6 @@ SoftwareSerial LCD(0, lcd_pin_number);
 #define BOARD_LED 13
 
 void setup() {
-  //initialize motor pins
-  pinMode(LEFT_MOTOR, OUTPUT);
-  pinMode(RIGHT_MOTOR, OUTPUT);
-  
   //initialize board light pin
   pinMode(BOARD_LED, OUTPUT);
 
@@ -81,9 +78,6 @@ void setup() {
   
   //Initialized serial port for debug
   Serial.begin(9600); 
-  
-  rightServo.attach(4);
-  leftServo.attach(2);
 }
 
 void loop() {
@@ -151,18 +145,7 @@ void displayBlink() {
 void path() {
   singlePrint("Path", 6);
    
-  delay(3000);
-  moveForward(5000);
-  turnLeft(90);
-  moveForward(5000);
-  turnRight(90);
-  moveForward(5000);
-  turnRight(90);
-  moveForward(5000);
-  turnLeft(90);
-  moveForward(5000);
-  stopRobot();
-  delay(5000);
+  //TODO
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -173,11 +156,11 @@ void path() {
 *
 * Name
 * *************
-* forward
+* leftForward
 *
 * Description
 * *************
-* This causes the robot to start moving forward.
+* This causes the left wheel to rotate forward.
 *
 * Parameters
 * *************
@@ -189,23 +172,20 @@ void path() {
 *
 *
 *************************************************************************/ 
-void forward() {
-  attachServo();
-  rightServo.write(RIGHT_FORWARD);
+void leftForward() {
+  attachLeftServo();
   leftServo.write(LEFT_FORWARD);
 }
-
-
 
 /************************************************************************
 *
 * Name
 * *************
-* backward
+* rightBackward
 *
 * Description
 * *************
-* This causes the robot to start moving backward.
+* This causes the right wheel to rotate backward.
 *
 * Parameters
 * *************
@@ -217,9 +197,8 @@ void forward() {
 *
 *
 *************************************************************************/ 
-void backward() {
-  attachServo();
-  leftServo.write(LEFT_BACKWARD);
+void rightBackward() {
+  attachRightServo();
   rightServo.write(RIGHT_BACKWARD);
 }
 
@@ -227,11 +206,11 @@ void backward() {
 *
 * Name
 * *************
-* left
+* leftBackward
 *
 * Description
 * *************
-* This causes the robot to start turning left.
+* This causes the left wheel to rotate backward.
 *
 * Parameters
 * *************
@@ -243,9 +222,33 @@ void backward() {
 *
 *
 *************************************************************************/ 
-void left() {
-  attachServo();
+void leftBackward() {
+  attachLeftServo();
   leftServo.write(LEFT_BACKWARD);
+}
+
+/************************************************************************
+*
+* Name
+* *************
+* rightForward
+*
+* Description
+* *************
+* This causes the right wheel to rotate forward.
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/ 
+void rightForward() {
+  attachRightServo();
   rightServo.write(RIGHT_FORWARD);
 }
 
@@ -253,37 +256,13 @@ void left() {
 *
 * Name
 * *************
-* right
+* fullStop
 *
 * Description
 * *************
-* This causes the robot to start turning right.
-*
-* Parameters
-* *************
-* None
-*
-* Returns
-* *************
-* void
-*
-*
-*************************************************************************/ 
-void right() {
-  attachServo();
-  leftServo.write(LEFT_FORWARD);
-  rightServo.write(RIGHT_BACKWARD);
-}
-
-/************************************************************************
-*
-* Name
-* *************
-* stop
-*
-* Description
-* *************
-* This causes the robot to stop completely.
+* This causes the robot to stop more permenantly than either of the
+* individual wheel stop functions. It accomplishes this by detaching the 
+* servos from the driver.
 *
 * Parameters
 * *************
@@ -296,26 +275,64 @@ void right() {
 *
 *************************************************************************/ 
 void fullStop() {
-  isAttached = false;
+  isLeftAttached = false;
+  isRightAttached = false;
   leftServo.detach();
   rightServo.detach(); 
 }
 
+/************************************************************************
+*
+* Name
+* *************
+* leftStop
+*
+* Description
+* *************
+* This causes the left wheel to stop rotating. This is to be used as a
+* temporary stop. See fullStop for a more complete stop. This is done without 
+* detaching the servos. Unfortunately, for our particular robot, there is
+* no motor constant that allows the left side to stop completely.
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/ 
 void leftStop() {
+  attachLeftServo();
   leftServo.write(LEFT_STOP);
 }
 
+/************************************************************************
+*
+* Name
+* *************
+* rightStop
+*
+* Description
+* *************
+* This causes the left wheel to stop rotating. This is to be used as a
+* temporary stop. See fullStop for a more complete stop.
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/ 
 void rightStop() {
+  attachRightServo();
   rightServo.write(RIGHT_STOP);
-}
-
-void leftForward() {
-   leftServo.write(LEFT_FORWARD);
-}
-
-void rightForward() {
-  rightServo.write(RIGHT_FORWARD);
-  
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -326,37 +343,30 @@ void rightForward() {
 *
 * Name
 * *************
-* moveForward
+* moveTicksForward
 *
 * Description
 * *************
-* This causes the robot to move forward for the specified time.
+* This causes the robot to move forward for the specified number of wheel
+* sensor ticks. It self-corrects any discrepencies between the left and
+* right wheels. To smooth out the movement, a threshold difference between 
+* the wheels is used. No correction takes place until the two wheels are
+* out of sync by at least the threshold.
 *
 * Parameters
 * *************
-* int duration - the amount of time the robot should move forward.
-
+* int numTicks - the number of sensor segments the robot should move 
+* forward.
+*
 * Returns
 * *************
 * void
 *
 *
-*************************************************************************/ 
-void moveForward(int duration) {
+*************************************************************************/
+void moveTicksForward(int numTicks) {
   doublePrint("Moving", 6, "forward", 7);
 
-  int t = 0;
-  forward();
-  while(t < duration) {
-   
-    delay(1);
-    t++;
-  }
-
-  fullStop();
-}
-
-void moveTicksForward(int numTicks) {
   boolean leftReading = readLeftSensor();
   boolean rightReading = readLeftSensor();
 
@@ -365,10 +375,9 @@ void moveTicksForward(int numTicks) {
 
   leftForward();
   rightForward();
-  
-  
+    
   while(numLeftTicks < numTicks) {
-  Serial.println(numLeftTicks);
+
     if(leftReading != readLeftSensor()) {
       numLeftTicks++;
       leftReading = readLeftSensor();
@@ -379,6 +388,7 @@ void moveTicksForward(int numTicks) {
       rightReading = readRightSensor();
     } 
 
+    // right and left discrepency correction
     if((numRightTicks - numLeftTicks) > THRESHOLD) {
       rightStop();
       leftForward();
@@ -391,108 +401,25 @@ void moveTicksForward(int numTicks) {
     }
   }
 
-  //stopRobot();
+  stopRobot();
 }
 
-/************************************************************************
-*
-* Name
-* *************
-* moveBackwards
-*
-* Description
-* *************
-* This causes the robot to move backward for the specified time.
-*
-* Parameters
-* *************
-* int duration - the amount of time the robot should move backward.
-
-* Returns
-* *************
-* void
-*
-*
-*************************************************************************/ 
-void moveBackward(int duration) {
+//TODO docs
+void moveTicksBackward(int duration) {
   doublePrint("Moving", 6, "backward", 8);
-  int t = 0;
- backward();
-  while(t < duration) {
-   
-    delay(1);
-    t++;
-  }
-
-  fullStop();
+  //TODO
 }
 
-/************************************************************************
-*
-* Name
-* *************
-* turnLeft
-*
-* Description
-* *************
-* This causes the robot to turn by the provided number of degrees to the 
-* left.
-*
-* Parameters
-* *************
-* int deg - the number of degrees to the left the robot should turn.
-*
-* Returns
-* *************
-* void
-*
-*
-*************************************************************************/ 
-void turnLeft(int deg) {
+//TODO docs
+void turnTicksLeft(int deg) {
   doublePrint("Turning", 7, "left", 4);
-  int t = 0;
-left();
-  while(t < deg*LEFT_MS_PER_DEG) {
-    
-    delay(1);
-    t++;
-  }
-
-  fullStop();
+  //TODO
 }
 
-/************************************************************************
-*
-* Name
-* *************
-* turnRight
-*
-* Description
-* *************
-* This causes the robot to turn by the provided number of degrees to the 
-* right.
-*
-* Parameters
-* *************
-* int deg - the number of degrees to the right the robot should turn.
-*
-* Returns
-* *************
-* void
-*
-*
-*************************************************************************/ 
-void turnRight(int deg) {
+//TODO docs
+void turnTicksRight(int numTicks) {
   doublePrint("Turning", 7, "right", 5);
-  int t = 0;
-right();
-  while(t < deg*RIGHT_MS_PER_DEG) {
-    
-    delay(1);
-    t++;
-  }
-
-  fullStop();
+  //TODO
 }
 
 /************************************************************************
@@ -521,7 +448,61 @@ void stopRobot() {
 }
 
 /////////////////////////////////////////////////////////////////////////
-/////////////////// LCD SCREEN RELATED METHOD ///////////////////////////
+///////////////// TILES TO TICKS AND DEGREES METHODS ////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+/************************************************************************
+*
+* Name
+* *************
+* tilesToTicks
+*
+* Description
+* *************
+* A convenience method to translate tile distance inputs to ticks.
+*
+* Parameters
+* *************
+* float tiles - the number of tiles to convert to ticks.
+*
+* Returns
+* *************
+* int ticks - the number of ticks corresponding to the input number of 
+*             tiles.
+*
+*
+*************************************************************************/ 
+int tilesToTicks(float tiles) {
+  return int(tiles * TICKS_PER_TILE);
+}
+
+/************************************************************************
+*
+* Name
+* *************
+* degreesToTicks
+*
+* Description
+* *************
+* A convenience method to translate rotational degreess to ticks.
+*
+* Parameters
+* *************
+* int degrees - the number of degrees to convert to ticks.
+*
+* Returns
+* *************
+* int ticks - the number of ticks corresponding to the input number of 
+*             degrees.
+*
+*
+*************************************************************************/ 
+int degressToTicks(int degrees) {
+  return int(degrees * TICKS_PER_DEGREE);
+}
+
+/////////////////////////////////////////////////////////////////////////
+/////////////////// LCD SCREEN RELATED METHODs //////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
 /************************************************************************
@@ -666,6 +647,60 @@ void singlePrint(char* wordOne, int lengthOne) {
 }
 
 /////////////////////////////////////////////////////////////////////////
+///////////////////////// SENSOR METHODS ////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+/************************************************************************
+*
+* Name
+* *************
+* readLeftSensor
+*
+* Description
+* *************
+* Reads the optical sensor input for the left wheel.
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* boolean - true if the sensor is detecting a shiny segment of the sensor,
+*           false otherwise. 
+*
+*
+*************************************************************************/ 
+boolean readLeftSensor() {
+  return boolean(digitalRead(LEFT_WHEEL_SENSOR));
+}
+
+/************************************************************************
+*
+* Name
+* *************
+* readRightSensor
+*
+* Description
+* *************
+* Reads the optical sensor input for the right wheel.
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* boolean - true if the sensor is detecting a shiny segment of the sensor,
+*           false otherwise. 
+*
+*
+*************************************************************************/ 
+boolean readRightSensor() {
+  return boolean(digitalRead(RIGHT_WHEEL_SENSOR));
+}
+
+/////////////////////////////////////////////////////////////////////////
 ///////////////////////// OTHER METHODS /////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
@@ -691,26 +726,19 @@ void singlePrint(char* wordOne, int lengthOne) {
 *************************************************************************/ 
 void flickerBeat(){
   digitalWrite(BOARD_LED, HIGH);
-  delay(10);
+  delay(20);
   digitalWrite(BOARD_LED, LOW);
 } 
 
-
-
-
-/////////////////////////////////////////////////////////////////////////
-///////////////////////// SENSOR METHODS ////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
-
 /************************************************************************
 *
 * Name
-**************
-* 
+* *************
+* attachLeftServo
 *
 * Description
 * *************
-* 
+* Initializes the left motor for movement commands via the Servo library.
 *
 * Parameters
 * *************
@@ -722,25 +750,22 @@ void flickerBeat(){
 *
 *
 *************************************************************************/ 
-
-
-void attachServo() {
-  if (!isAttached){
-    isAttached = true;
-    rightServo.attach(4);
-  leftServo.attach(2);
-  } 
+void attachLeftServo() {
+  if (!isLeftAttached) {
+    isLeftAttached = true;
+    leftServo.attach(LEFT_MOTOR);
+  }
 }
 
 /************************************************************************
 *
 * Name
-**************
-* 
+* *************
+* attachRightServo
 *
 * Description
 * *************
-* 
+* Initializes the right motor for movement commands via the Servo library.
 *
 * Parameters
 * *************
@@ -752,38 +777,17 @@ void attachServo() {
 *
 *
 *************************************************************************/ 
-int readLeftSensor() {
-  return boolean(digitalRead(LEFT_WHEEL_SENSOR));
+void attachRightServo() {
+  if (!isRightAttached) {
+    isRightAttached = true;
+    rightServo.attach(RIGHT_MOTOR);
+  }
 }
 
 /************************************************************************
 *
 * Name
-**************
-* 
-*
-* Description
 * *************
-* 
-*
-* Parameters
-* *************
-* None
-*
-* Returns
-* *************
-* void
-*
-*
-*************************************************************************/ 
-int readRightSensor() {
-  return boolean(digitalRead(RIGHT_WHEEL_SENSOR));
-}
-
-/************************************************************************
-*
-* Name
-**************
 * SerialEvent
 *
 * Description
