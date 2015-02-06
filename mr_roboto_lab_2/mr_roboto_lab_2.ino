@@ -1,22 +1,20 @@
-/**************************************************
-****************************
+/************************************************************************
 *
 * Names: Craig Bryan
 *        Kat Drobnjakovic
 *
 * Course Code: SEG 4145
 * Lab Number: 1
-* File name: mr_roboto_lab_1
-* Date: January 22, 2015
+* File name: mr_roboto_lab_2
+* Date: February 5, 2015
 *
 *
 * Description
 * *************
-* A simple set of robot controls.
+* A simple set of robot movement controls using the Servo library and 
+* wheel optical sensor feedback.
 *
-**************************************************
-****************************
-*/ 
+*************************************************************************/ 
 
 #include <SoftwareSerial.h>
 #include <Servo.h>
