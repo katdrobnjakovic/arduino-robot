@@ -26,8 +26,8 @@
 #define RIGHT_MOTOR 4
 
 // WHEEL SENSOR CONSTANTS
-#define RIGHT_WHEEL_SENSOR 26
-#define LEFT_WHEEL_SENSOR 28
+#define RIGHT_WHEEL_SENSOR 28
+#define LEFT_WHEEL_SENSOR 26
 
 // DIRECTION CONSTANTS
 #define LEFT_BACKWARD 0
@@ -39,6 +39,9 @@
 Servo rightServo;
 Servo leftServo;
 boolean isAttached;
+#define LEFT_STOP 80
+#define RIGHT_STOP 81
+#define THRESHOLD 4
 
 // TURN CONSTANTS
 #define RIGHT_MS_PER_DEG 7.89
@@ -78,17 +81,15 @@ void setup() {
   
   //Initialized serial port for debug
   Serial.begin(9600); 
+  
+  rightServo.attach(4);
+  leftServo.attach(2);
 }
 
 void loop() {
-   forward();
-  Serial.print("LEFT ");
-  Serial.println(readLeftSensor());
-  Serial.print("RIGHT ");
-  Serial.println(readRightSensor());
+  moveTicksForward(1000);
+  delay(1000);
  
-  delay(5000);
-
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -300,6 +301,23 @@ void fullStop() {
   rightServo.detach(); 
 }
 
+void leftStop() {
+  leftServo.write(LEFT_STOP);
+}
+
+void rightStop() {
+  rightServo.write(RIGHT_STOP);
+}
+
+void leftForward() {
+   leftServo.write(LEFT_FORWARD);
+}
+
+void rightForward() {
+  rightServo.write(RIGHT_FORWARD);
+  
+}
+
 /////////////////////////////////////////////////////////////////////////
 ///////////////// MORE COMPLEX MOVEMENT METHODS /////////////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -340,17 +358,40 @@ void moveForward(int duration) {
 
 void moveTicksForward(int numTicks) {
   boolean leftReading = readLeftSensor();
+  boolean rightReading = readLeftSensor();
 
-  int numTicksLeft = 0;
+  int numLeftTicks = 0;
+  int numRightTicks = 0;
 
-  forward();
-  while(numTicksLeft < numTicks) {
+  leftForward();
+  rightForward();
+  
+  
+  while(numLeftTicks < numTicks) {
+  Serial.println(numLeftTicks);
     if(leftReading != readLeftSensor()) {
-      numTicksLeft++;
+      numLeftTicks++;
+      leftReading = readLeftSensor();
+    }
+
+    if(rightReading != readRightSensor()) {
+      numRightTicks++;
+      rightReading = readRightSensor();
+    } 
+
+    if((numRightTicks - numLeftTicks) > THRESHOLD) {
+      rightStop();
+      leftForward();
+    } else if((numLeftTicks - numRightTicks) > THRESHOLD) {
+      leftStop();
+      rightForward();
+    } else {
+      leftForward();
+      rightForward();
     }
   }
 
-  stopRobot();
+  //stopRobot();
 }
 
 /************************************************************************
@@ -712,7 +753,7 @@ void attachServo() {
 *
 *************************************************************************/ 
 int readLeftSensor() {
-  digitalRead(LEFT_WHEEL_SENSOR);
+  return boolean(digitalRead(LEFT_WHEEL_SENSOR));
 }
 
 /************************************************************************
@@ -736,7 +777,7 @@ int readLeftSensor() {
 *
 *************************************************************************/ 
 int readRightSensor() {
-  digitalRead(RIGHT_WHEEL_SENSOR);
+  return boolean(digitalRead(RIGHT_WHEEL_SENSOR));
 }
 
 /************************************************************************
