@@ -1,22 +1,19 @@
-/**************************************************
-****************************
+/************************************************************************
 *
 * Names: Craig Bryan
 *        Kat Drobnjakovic
 *
 * Course Code: SEG 4145
-* Lab Number: 1
-* File name: mr_roboto_lab_1
-* Date: January 22, 2015
+* Lab Number: 2
+* File name: mr_roboto_lab_2
+* Date: February 5, 2015
 *
 *
 * Description
 * *************
-* A simple set of robot controls.
+* Simple robot movement control with optical wheel sensor feedback.
 *
-**************************************************
-****************************
-*/ 
+*************************************************************************/ 
 
 #include <SoftwareSerial.h>
 #include <Servo.h>
@@ -416,10 +413,69 @@ void turnTicksLeft(int deg) {
   //TODO
 }
 
-//TODO docs
+/************************************************************************
+*
+* Name
+* *************
+* turnTicksRight
+*
+* Description
+* *************
+* This causes the robot to turn right for the provided number of ticks. 
+* It self-corrects any discrepencies between the left and
+* right wheels. To smooth out the movement, a threshold difference between 
+* the wheels is used. No correction takes place until the two wheels are
+* out of sync by at least the threshold.
+*
+* Parameters
+* *************
+* int numTicks - the number of sensor segments the robot should move 
+* forward.
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/
 void turnTicksRight(int numTicks) {
   doublePrint("Turning", 7, "right", 5);
-  //TODO
+
+  boolean leftReading = readLeftSensor();
+  boolean rightReading = readLeftSensor();
+
+  int numLeftTicks = 0;
+  int numRightTicks = 0;
+
+  leftForward();
+  rightBackward();
+    
+  while(numLeftTicks < numTicks) {
+
+    if(leftReading != readLeftSensor()) {
+      numLeftTicks++;
+      leftReading = readLeftSensor();
+    }
+
+    if(rightReading != readRightSensor()) {
+      numRightTicks++;
+      rightReading = readRightSensor();
+    } 
+
+    // right and left discrepency correction
+    if((numRightTicks - numLeftTicks) > THRESHOLD) {
+      rightStop();
+      leftForward();
+    } else if((numLeftTicks - numRightTicks) > THRESHOLD) {
+      leftStop();
+      rightBackward();
+    } else {
+      leftForward();
+      rightBackward();
+    }
+  }
+
+  stopRobot();
 }
 
 /************************************************************************
