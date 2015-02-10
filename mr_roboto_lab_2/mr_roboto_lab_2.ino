@@ -128,7 +128,7 @@ void displayBlink() {
 *
 * Description
 * *************
-* The first path for lab 1.
+* The path for lab 2.
 *
 * Parameters
 * *************
@@ -142,8 +142,8 @@ void displayBlink() {
 *************************************************************************/ 
 void path() {
   singlePrint("Path", 6);
+  //TO DO
    
-  //TODO
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -402,16 +402,75 @@ void moveTicksForward(int numTicks) {
   stopRobot();
 }
 
-//TODO docs
+//TODO
 void moveTicksBackward(int duration) {
   doublePrint("Moving", 6, "backward", 8);
   //TODO
 }
 
-//TODO docs
-void turnTicksLeft(int deg) {
+/************************************************************************
+*
+* Name
+* *************
+* turnTicksLeft
+*
+* Description
+* *************
+* This causes the robot to turn left for the provided number of ticks. 
+* It self-corrects any discrepencies between the left and
+* right wheels. To smooth out the movement, a threshold difference between 
+* the wheels is used. No correction takes place until the two wheels are
+* out of sync by at least the threshold.
+*
+* Parameters
+* *************
+* int numTicks - the number of sensor segments the robot should move 
+* forward.
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/
+void turnTicksLeft(int numTicks) {
   doublePrint("Turning", 7, "left", 4);
-  //TODO
+  
+  boolean leftReading = readLeftSensor();
+  boolean rightReading = readLeftSensor();
+
+  int numLeftTicks = 0;
+  int numRightTicks = 0;
+
+  rightForward();
+  leftBackward();
+    
+  while(numRightTicks < numTicks) {
+
+    if(leftReading != readLeftSensor()) {
+      numLeftTicks++;
+      leftReading = readLeftSensor();
+    }
+
+    if(rightReading != readRightSensor()) {
+      numRightTicks++;
+      rightReading = readRightSensor();
+    } 
+
+    // right and left discrepency correction
+    if((numLeftTicks - numRightTicks) > THRESHOLD) {
+      leftStop();
+      rightForward();
+    } else if((numRightTicks - numLeftTicks) > THRESHOLD) {
+      rightStop();
+      leftBackward();
+    } else {
+      rightForward();
+      leftBackward();
+    }
+  }
+
+  stopRobot();
 }
 
 /************************************************************************
