@@ -402,10 +402,69 @@ void moveTicksForward(int numTicks) {
   stopRobot();
 }
 
-//TODO
-void moveTicksBackward(int duration) {
+/************************************************************************
+*
+* Name
+* *************
+* moveTicksBackward
+*
+* Description
+* *************
+* This causes the robot to move backward for the specified number of wheel
+* sensor ticks. It self-corrects any discrepencies between the left and
+* right wheels. To smooth out the movement, a threshold difference between 
+* the wheels is used. No correction takes place until the two wheels are
+* out of sync by at least the threshold.
+*
+* Parameters
+* *************
+* int numTicks - the number of sensor segments the robot should move 
+* backward.
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/
+void moveTicksBackward(int numTicks) {
   doublePrint("Moving", 6, "backward", 8);
-  //TODO
+  
+  boolean leftReading = readLeftSensor();
+  boolean rightReading = readLeftSensor();
+
+  int numLeftTicks = 0;
+  int numRightTicks = 0;
+
+  leftBackward();
+  rightBackward();
+    
+  while(numRightTicks < numTicks) {
+
+    if(rightReading != readRightSensor()) {
+      numRightTicks++;
+      rightReading = readRightSensor();
+    } 
+    
+    if(leftReading != readLeftSensor()) {
+      numLeftTicks++;
+      leftReading = readLeftSensor();
+    }
+
+    // right and left discrepency correction
+    if((numLeftTicks - numRightTicks) > THRESHOLD) {
+      leftStop();
+      rightBackward();
+    } else if((numRightTicks - numLeftTicks) > THRESHOLD) {
+      rightStop();
+      leftBackward();
+    } else {
+      leftBackward();
+      rightBackward();
+    }
+  }
+
+  stopRobot();
 }
 
 /************************************************************************
@@ -447,15 +506,15 @@ void turnTicksLeft(int numTicks) {
     
   while(numRightTicks < numTicks) {
 
-    if(leftReading != readLeftSensor()) {
-      numLeftTicks++;
-      leftReading = readLeftSensor();
-    }
-
     if(rightReading != readRightSensor()) {
       numRightTicks++;
       rightReading = readRightSensor();
     } 
+    
+    if(leftReading != readLeftSensor()) {
+      numLeftTicks++;
+      leftReading = readLeftSensor();
+    }
 
     // right and left discrepency correction
     if((numLeftTicks - numRightTicks) > THRESHOLD) {
