@@ -977,48 +977,4 @@ void attachRightServo() {
   }
 }
 
-/************************************************************************
-*
-* Name
-* *************
-* SerialEvent
-*
-* Description
-* *************
-* This is a built-in Arduino method that fires when a serial message is 
-* detected over the default serial port. We used it to debug the movement
-* methods.
-*
-* Parameters
-* *************
-* None
-*
-* Returns
-* *************
-* void
-*
-*
-*************************************************************************/ 
-void SerialEvent() {
-  while(Serial.available()) {
-     char inChar = (char)Serial.read();
-     
-     if (inChar == 'f') {
-       forward(); 
-       
-     } else if (inChar == 'b') {
-       backward();
-       
-     } else if (inChar == 'l') {
-       left();
-       
-     } else if (inChar == 'r') {
-       right();
-       
-     } else {
-      Serial.print("Invalid command: \"");
-      Serial.print(inChar); 
-      Serial.print("\"\n");
-     }
-  }
-}
+
