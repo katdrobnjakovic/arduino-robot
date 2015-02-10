@@ -4,23 +4,15 @@
 *        Kat Drobnjakovic
 *
 * Course Code: SEG 4145
-<<<<<<< HEAD
 * Lab Number: 2
-=======
-* Lab Number: 1
->>>>>>> 237f23173cb14e384ba1d4d6e8f3dccc175cfbd8
 * File name: mr_roboto_lab_2
 * Date: February 5, 2015
 *
 *
 * Description
 * *************
-<<<<<<< HEAD
-* Simple robot movement control with optical wheel sensor feedback.
-=======
 * A simple set of robot movement controls using the Servo library and 
 * wheel optical sensor feedback.
->>>>>>> 237f23173cb14e384ba1d4d6e8f3dccc175cfbd8
 *
 *************************************************************************/ 
 
