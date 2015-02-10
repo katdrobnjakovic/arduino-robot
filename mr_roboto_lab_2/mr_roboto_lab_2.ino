@@ -142,7 +142,25 @@ void displayBlink() {
 *************************************************************************/ 
 void path() {
   singlePrint("Path", 6);
-  //TO DO
+  
+  moveTicksForward(TICKS_PER_TILE * 1.7); 
+  moveTicksRight(TICKS_PER_DEGREE * 90);
+  moveTicksForward(TICKS_PER_TILE * 2);
+  moveTicksRight(TICKS_PER_DEGREE * 90);
+  moveTicksForward(TICKS_PER_TILE * 3);
+  moveTicksRight(TICKS_PER_DEGREE * 90);
+  moveTicksForward(TICKS_PER_TILE * 3);
+  moveTicksRight(TICKS_PER_DEGREE * 90);
+  moveTicksForward(TICKS_PER_TILE * 2);
+  moveTicksLeft(TICKS_PER_DEGREE * 45);
+  moveTicksForward(TICKS_PER_TILE * 1);
+  moveTicksLeft(TICKS_PER_DEGREE * 135);
+  moveTicksForward(TICKS_PER_TILE * 4);
+  moveTicksLeft(TICKS_PER_DEGREE * 90);
+  moveTicksForward(TICKS_PER_TILE * 2);
+  moveTicksLeft(TICKS_PER_DEGREE * 90);
+  moveTicksForward(TICKS_PER_TILE * 1.7);
+  fullStop();
    
 }
 
