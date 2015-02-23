@@ -21,11 +21,11 @@
 
 // MOTOR CONSTANTS
 #define LEFT_MOTOR 2
-#define RIGHT_MOTOR 4
+#define RIGHT_MOTOR 8
 
 // WHEEL SENSOR CONSTANTS
-#define RIGHT_WHEEL_SENSOR 28
-#define LEFT_WHEEL_SENSOR 26
+#define RIGHT_WHEEL_SENSOR 49
+#define LEFT_WHEEL_SENSOR 48
 
 // DIRECTION CONSTANTS
 #define LEFT_BACKWARD 0
@@ -143,23 +143,23 @@ void displayBlink() {
 void path() {
   singlePrint("Path", 6);
   
-  moveTicksForward(TICKS_PER_TILE * 1.7); 
-  turnTicksRight(TICKS_PER_DEGREE * 90);
-  moveTicksForward(TICKS_PER_TILE * 2);
-  turnTicksRight(TICKS_PER_DEGREE * 90);
-  moveTicksForward(TICKS_PER_TILE * 3);
-  turnTicksRight(TICKS_PER_DEGREE * 90);
-  moveTicksForward(TICKS_PER_TILE * 3);
-  turnTicksRight(TICKS_PER_DEGREE * 90);
-  moveTicksForward(TICKS_PER_TILE * 2);
-  turnTicksLeft(TICKS_PER_DEGREE * 45);
-  moveTicksForward(TICKS_PER_TILE * 1);
-  turnTicksLeft(TICKS_PER_DEGREE * 135);
-  moveTicksForward(TICKS_PER_TILE * 4);
-  turnTicksLeft(TICKS_PER_DEGREE * 90);
-  moveTicksForward(TICKS_PER_TILE * 2);
-  turnTicksLeft(TICKS_PER_DEGREE * 90);
-  moveTicksForward(TICKS_PER_TILE * 1.7);
+  moveTilesForward(1.7); 
+  turnDegreesRight(90);
+  moveTilesForward(2);
+  turnDegreesRight(90);
+  moveTilesForward(3);
+  turnDegreesRight(90);
+  moveTilesForward(3);
+  turnDegreesRight(90);
+  moveTilesForward(2);
+  turnDegreesLeft(5);
+  moveTilesForward(1);
+  turnDegreesLeft(135);
+  moveTilesForward(4);
+  turnDegreesLeft(90);
+  moveTilesForward(2);
+  turnDegreesLeft(90);
+  moveTilesForward(1.7);
   fullStop();
    
 }
@@ -352,7 +352,7 @@ void rightStop() {
 }
 
 /////////////////////////////////////////////////////////////////////////
-///////////////// MORE COMPLEX MOVEMENT METHODS /////////////////////////
+////////////////// TICK-BASED COMPLEX MOVEMENT METHODS //////////////////
 /////////////////////////////////////////////////////////////////////////
 
 /************************************************************************
@@ -392,7 +392,7 @@ void moveTicksForward(int numTicks) {
   leftForward();
   rightForward();
     
-  while(numLeftTicks < numTicks) {
+  while(numLeftTicks < numTicks || numRightTicks < numTicks) {
 
     if(leftReading != readLeftSensor()) {
       numLeftTicks++;
@@ -638,6 +638,106 @@ void turnTicksRight(int numTicks) {
 void stopRobot() {
   fullStop();
   singlePrint("Stopped", 7);
+}
+
+/////////////////////////////////////////////////////////////////////////
+//////////// TILE AND DEGREE-BASED COMPLEX MOVEMENT METHODS /////////////
+/////////////////////////////////////////////////////////////////////////
+
+/************************************************************************
+*
+* Name
+* *************
+* moveTilesForward
+*
+* Description
+* *************
+* This uses the moveTicksForward to move the robot forward a number of tiles
+*
+* Parameters
+* *************
+* float numTiles - the number of tiles to move forward
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/
+void moveTilesForward(int numTiles) {
+  moveTicksForward(numTiles * TICKS_PER_TILE);
+}
+
+/************************************************************************
+*
+* Name
+* *************
+* moveTilesBackward
+*
+* Description
+* *************
+* This uses the moveTicksBackward to move the robot backward a number of tiles
+*
+* Parameters
+* *************
+* float numTiles - the number of tiles to move backward
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/
+void moveTilesBackward(float numTiles) {
+  moveTicksBackward(numTiles * TICKS_PER_TILE);
+}
+
+/************************************************************************
+*
+* Name
+* *************
+* turnDegreesLeft
+*
+* Description
+* *************
+* This uses the turnTicksLeft to turn a certain number of degrees
+*
+* Parameters
+* *************
+* int numDegrees - the number of degrees to turn to the left
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/
+void turnDegreesLeft(int numDegrees) {
+  turnTicksLeft(numDegrees * TICKS_PER_DEGREE);
+}
+
+/************************************************************************
+*
+* Name
+* *************
+* turnDegreesRight
+*
+* Description
+* *************
+* This uses the turnTicksRight to turn a certain number of degrees
+*
+* Parameters
+* *************
+* int numDegrees - the number of degrees to turn to the right
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/
+void turnDegreesRight(int numDegrees) {
+  turnTicksRight(numDegrees * TICKS_PER_DEGREE);
 }
 
 /////////////////////////////////////////////////////////////////////////
