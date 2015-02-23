@@ -40,11 +40,14 @@ Servo rightServo;
 Servo leftServo;
 boolean isRightAttached;
 boolean isLeftAttached;
-#define THRESHOLD 4
+#define THRESHOLD 2
 
 // TURN AND DISTANCE CONSTANTS
-#define TICKS_PER_DEGREE 16 
-#define TICKS_PER_TILE 256
+#define TICKS_PER_DEGREE_LEFT 0.59
+#define TICKS_PER_DEGREE_RIGHT 0.58
+// right = 45
+// left = 49
+#define TICKS_PER_TILE 103
 
 // LCD CONSTANTS
 int lcd_pin_number = 19;
@@ -79,7 +82,8 @@ void setup() {
 }
 
 void loop() {
-  moveTicksForward(1000);
+  displayBlink();
+  path();
   delay(1000);
  
 }
@@ -142,8 +146,8 @@ void displayBlink() {
 *************************************************************************/ 
 void path() {
   singlePrint("Path", 6);
-  
-  moveTilesForward(1.7); 
+
+  moveTilesForward(2); 
   turnDegreesRight(90);
   moveTilesForward(2);
   turnDegreesRight(90);
@@ -152,16 +156,15 @@ void path() {
   moveTilesForward(3);
   turnDegreesRight(90);
   moveTilesForward(2);
-  turnDegreesLeft(5);
-  moveTilesForward(1);
+  turnDegreesLeft(45);
+  moveTilesForward(1.41);
   turnDegreesLeft(135);
   moveTilesForward(4);
   turnDegreesLeft(90);
   moveTilesForward(2);
   turnDegreesLeft(90);
-  moveTilesForward(1.7);
+  moveTilesForward(2);
   fullStop();
-   
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -386,7 +389,7 @@ void moveTicksForward(int numTicks) {
   boolean leftReading = readLeftSensor();
   boolean rightReading = readLeftSensor();
 
-  int numLeftTicks = 0;
+  int numLeftTicks = -1;
   int numRightTicks = 0;
 
   leftForward();
@@ -451,13 +454,13 @@ void moveTicksBackward(int numTicks) {
   boolean leftReading = readLeftSensor();
   boolean rightReading = readLeftSensor();
 
-  int numLeftTicks = 0;
+  int numLeftTicks = -1;
   int numRightTicks = 0;
 
   leftBackward();
   rightBackward();
     
-  while(numRightTicks < numTicks) {
+  while(numRightTicks < numTicks || numRightTicks < numTicks) {
 
     if(rightReading != readRightSensor()) {
       numRightTicks++;
@@ -516,13 +519,13 @@ void turnTicksLeft(int numTicks) {
   boolean leftReading = readLeftSensor();
   boolean rightReading = readLeftSensor();
 
-  int numLeftTicks = 0;
+  int numLeftTicks = -1;
   int numRightTicks = 0;
 
   rightForward();
   leftBackward();
     
-  while(numRightTicks < numTicks) {
+  while(numRightTicks < numTicks || numRightTicks < numTicks) {
 
     if(rightReading != readRightSensor()) {
       numRightTicks++;
@@ -581,13 +584,13 @@ void turnTicksRight(int numTicks) {
   boolean leftReading = readLeftSensor();
   boolean rightReading = readLeftSensor();
 
-  int numLeftTicks = 0;
+  int numLeftTicks = -1;
   int numRightTicks = 0;
 
   leftForward();
   rightBackward();
     
-  while(numLeftTicks < numTicks) {
+  while(numLeftTicks < numTicks || numRightTicks < numTicks) {
 
     if(leftReading != readLeftSensor()) {
       numLeftTicks++;
@@ -791,7 +794,7 @@ int tilesToTicks(float tiles) {
 *
 *************************************************************************/ 
 int degressToTicks(int degrees) {
-  return int(degrees * TICKS_PER_DEGREE);
+  return int(degrees * TICKS_PER_DEGREE_RIGHT);
 }
 
 /////////////////////////////////////////////////////////////////////////
