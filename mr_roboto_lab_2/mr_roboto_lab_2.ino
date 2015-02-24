@@ -667,7 +667,7 @@ void stopRobot() {
 *
 *
 *************************************************************************/
-void moveTilesForward(int numTiles) {
+void moveTilesForward(float numTiles) {
   moveTicksForward(numTiles * TICKS_PER_TILE);
 }
 
