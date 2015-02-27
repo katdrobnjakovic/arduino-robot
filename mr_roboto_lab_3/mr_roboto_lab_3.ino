@@ -66,16 +66,11 @@ SoftwareSerial LCD(0, lcd_pin_number);
 #define CMD_FLAG 0xFE
 
 // SONAR SENSOR CONSTANTS
-#define SONAR 1 //TODO set
-#define FIRST_PULSE_TIME
-#define SECOND_PULSE_TIME
-#define THIRD_PULSE_TIME
-
-
+#define SONAR 22 //TODO set
 
 // TEMPERATURE SENSOR CONSTANTS
 #define TEMP_SENSOR 0x68 //address
-int tempurature_reg = 0x01;
+int tempurature_reg = 0x01; //ambient temperature register
 
 // OTHER CONSTANT
 #define BOARD_LED 13
@@ -213,6 +208,12 @@ void leftForward() {
   leftServo.write(LEFT_FORWARD);
 }
 
+void thing() {
+  char* thing = "";
+  String temp = String(readTemperatureSensor());
+
+
+}
 /************************************************************************
 *
 * Name
@@ -1029,7 +1030,7 @@ boolean readRightSensor() {
 *
 * Returns
 * *************
-* TODO
+* long - the raw sonar reading
 *
 *
 *************************************************************************/ 
@@ -1060,7 +1061,7 @@ long readSonarSensor() {
 *
 * Returns
 * *************
-* TODO
+* byte - the temperature reading
 *
 *
 *************************************************************************/ 
