@@ -20,7 +20,7 @@
 #include <Servo.h>
 
 // MOTOR CONSTANTS
-#define LEFT_MOTOR 2
+#define LEFT_MOTOR 45
 #define RIGHT_MOTOR 8
 
 // WHEEL SENSOR CONSTANTS
@@ -716,7 +716,7 @@ void moveTilesBackward(float numTiles) {
 *
 *************************************************************************/
 void turnDegreesLeft(int numDegrees) {
-  turnTicksLeft(numDegrees * TICKS_PER_DEGREE);
+  turnTicksLeft(numDegrees * TICKS_PER_DEGREE_LEFT);
 }
 
 /************************************************************************
@@ -740,7 +740,7 @@ void turnDegreesLeft(int numDegrees) {
 *
 *************************************************************************/
 void turnDegreesRight(int numDegrees) {
-  turnTicksRight(numDegrees * TICKS_PER_DEGREE);
+  turnTicksRight(numDegrees * TICKS_PER_DEGREE_RIGHT);
 }
 
 /////////////////////////////////////////////////////////////////////////
