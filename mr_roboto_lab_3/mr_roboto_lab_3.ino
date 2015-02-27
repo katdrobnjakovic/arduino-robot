@@ -22,8 +22,11 @@
 #include <Wire.h>
 
 // MOTOR CONSTANTS
-#define LEFT_MOTOR 2
+#define LEFT_MOTOR 45
 #define RIGHT_MOTOR 8
+
+//HEAD CONSTANTS
+#define HEAD_MOTOR 7
 
 // WHEEL SENSOR CONSTANTS
 #define RIGHT_WHEEL_SENSOR 49
@@ -66,15 +69,14 @@ SoftwareSerial LCD(0, lcd_pin_number);
 #define CMD_FLAG 0xFE
 
 // SONAR SENSOR CONSTANTS
-#define SONAR 1 //TODO set
-#define FIRST_PULSE_TIME
-#define SECOND_PULSE_TIME
-#define THIRD_PULSE_TIME
+#define SONAR 22 //TODO set
+
 
 
 
 // TEMPERATURE SENSOR CONSTANTS
 #define TEMP_SENSOR 0x68 //address
+//yellow = 20 blue = 21
 int tempurature_reg = 0x01;
 
 // OTHER CONSTANT
@@ -99,9 +101,10 @@ void setup() {
 }
 
 void loop() {
-  displayBlink();
-  path();
-  delay(1000);
+  //readTemperatureSensor();
+  //Serial.print(readTemperatureSensor());
+  delay(3000);
+  printTemp();
  
 }
 
@@ -733,7 +736,7 @@ void moveTilesBackward(float numTiles) {
 *
 *************************************************************************/
 void turnDegreesLeft(int numDegrees) {
-  turnTicksLeft(numDegrees * TICKS_PER_DEGREE);
+  turnTicksLeft(numDegrees * TICKS_PER_DEGREE_LEFT);
 }
 
 /************************************************************************
@@ -757,7 +760,7 @@ void turnDegreesLeft(int numDegrees) {
 *
 *************************************************************************/
 void turnDegreesRight(int numDegrees) {
-  turnTicksRight(numDegrees * TICKS_PER_DEGREE);
+  turnTicksRight(numDegrees * TICKS_PER_DEGREE_RIGHT);
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -1068,9 +1071,18 @@ byte readTemperatureSensor() {
   Wire.beginTransmission(TEMP_SENSOR);
   Wire.write(tempurature_reg);
   Wire.endTransmission();
-  Wire.requestFrom(TEMP_SENSOR, 1)
+  Wire.requestFrom(TEMP_SENSOR, 1);
   while(Wire.available() < 1);
   return Wire.read();
+}
+
+void printTemp() {
+  char* temperatureString = "   ";
+  String temp = String(readTemperatureSensor()) + " degrees";
+  temp.toCharArray(temperatureString, 10);
+  
+  //printf(temperatureString, readTemperatureSensor());
+  doublePrint("Temperature", 11, temperatureString, 10); 
 }
 
 /////////////////////////////////////////////////////////////////////////
