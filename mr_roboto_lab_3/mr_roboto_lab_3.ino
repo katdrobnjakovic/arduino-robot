@@ -27,6 +27,13 @@
 
 //HEAD CONSTANTS
 #define HEAD_MOTOR 7
+Servo headServo;
+boolean isHeadAttached;
+#define MAX_LEFT_HEAD_TURN 75
+#define MAX_RIGHT_HEAD_TURN 105
+#define DEGREES_PER_ITERATION 5
+#define FULL_LEFT_DEGREE 0 //this is what we consider zero, need to calibrate
+boolean scanningLeft;
 
 // WHEEL SENSOR CONSTANTS
 #define RIGHT_WHEEL_SENSOR 49
@@ -87,6 +94,16 @@ void setup() {
   pinMode(RIGHT_WHEEL_SENSOR, INPUT);
   pinMode(LEFT_WHEEL_SENSOR, INPUT);
   
+  //Start the motors disattached
+  isHeadAttached = false;
+  isLeftAttached = false;
+  isRightAttached = false;
+
+  //Center the head
+  turnHeadTo(90);
+
+  //Start the head scanning left
+
   //Initialize lcd 
   LCD.begin(9600); //open serial port to LCD screen with baud at 9600
   
@@ -812,6 +829,77 @@ int tilesToTicks(float tiles) {
 *************************************************************************/ 
 int degressToTicks(int degrees) {
   return int(degrees * TICKS_PER_DEGREE_RIGHT);
+}
+
+/////////////////////////////////////////////////////////////////////////
+/////////////////////. HEAD MOVEMENT METHODs ////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+/************************************************************************
+*
+* Name
+* *************
+* turnHeadTo
+*
+* Description
+* *************
+* This causes the robot head to turn to the specified degree. 
+*
+* Parameters
+* *************
+* int degree - the degree to turn the robot head to. 0 degrees is a full
+*              left head turn 180 is a full right head turn. 90 degrees is
+*              is straight on.
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/ 
+void turnHeadTo(int degree) {
+  if(degree < MAX_LEFT_HEAD_TURN) degree = MAX_LEFT_HEAD_TURN;
+  else if(degree > MAX_RIGHT_HEAD_TURN) degree = MAX_RIGHT_HEAD_TURN;
+
+  if(!isHeadAttached) headServo.attach(HEAD_MOTOR);
+
+  headServo.write(FULL_LEFT_DEGREE + degree);
+}
+
+/************************************************************************
+*
+* Name
+* *************
+* scanHead
+*
+* Description
+* *************
+* This does an iteration of the robot head scanning. It will scan by
+* DEGREES_PER_ITERATION each call. If MAX_LEFT_HEAD_TURN or 
+* MAX_RIGHT_HEAD_TURN is reached, it will change directions.
+*
+* Parameters
+* *************
+* void
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/
+void scanHead() {
+  int nextDegree = headServo.read(); //gets the last written value
+
+  if(scanningLeft) {
+    nextDegree -= DEGREES_PER_ITERATION;
+    if(nextDegree <= MAX_LEFT_HEAD_TURN) scanningLeft = false;
+  } else {
+    nextDegree += DEGREES_PER_ITERATION;
+    if(nextDegree >= MAX_RIGHT_HEAD_TURN) scanningLeft = true;
+  }
+
+  turnHeadTo(nextDegree);
 }
 
 /////////////////////////////////////////////////////////////////////////
