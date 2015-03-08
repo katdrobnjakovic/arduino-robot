@@ -1074,12 +1074,12 @@ byte readTemperatureSensor() {
 }
 
 void printTemp() {
-  char* temperatureString = "   ";
+  char temperatureString[11];
   String temp = String(readTemperatureSensor()) + " degrees";
-  temp.toCharArray(temperatureString, 10);
+  temp.toCharArray(temperatureString, 11);
   
   //printf(temperatureString, readTemperatureSensor());
-  doublePrint("Temperature", 11, temperatureString, 10); 
+  doublePrint("Temperature", 11, temperatureString, 11); 
 }
 
 /////////////////////////////////////////////////////////////////////////
