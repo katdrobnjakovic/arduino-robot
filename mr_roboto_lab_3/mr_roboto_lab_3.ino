@@ -34,6 +34,7 @@ boolean isHeadAttached;
 #define DEGREES_PER_ITERATION 5
 #define FULL_LEFT_DEGREE 0 //this is what we consider zero, need to calibrate
 boolean scanningLeft;
+#define TICKS_PER_HEAD_MOVE 25 // TODO calibrate
 
 // WHEEL SENSOR CONSTANTS
 #define RIGHT_WHEEL_SENSOR 49
@@ -423,7 +424,8 @@ void moveTicksForward(int numTicks) {
   boolean leftReading = readLeftSensor();
   boolean rightReading = readLeftSensor();
 
-  int numLeftTicks = -1;
+  int tickCounter = 0;
+  int numLeftTicks = -1; //TODO why is this -1???
   int numRightTicks = 0;
 
   leftForward();
@@ -432,12 +434,13 @@ void moveTicksForward(int numTicks) {
   while(numLeftTicks < numTicks || numRightTicks < numTicks) {
 
     if(leftReading != readLeftSensor()) {
-      numLeftTicks++;
+      ++numLeftTicks;
       leftReading = readLeftSensor();
+      ++tickCounter;
     }
 
     if(rightReading != readRightSensor()) {
-      numRightTicks++;
+      ++numRightTicks;
       rightReading = readRightSensor();
     } 
 
@@ -451,6 +454,12 @@ void moveTicksForward(int numTicks) {
     } else {
       leftForward();
       rightForward();
+    }
+
+    if(tickCounter >= TICKS_PER_HEAD_MOVE)
+    {
+      tickCounter = 0;
+      scanHead();
     }
   }
 
