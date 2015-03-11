@@ -119,10 +119,16 @@ void setup() {
 void loop() {
   //readTemperatureSensor();
   //Serial.print(readTemperatureSensor());
+
   scanHead();
   delay(500);
   //printTemp();
- 
+
+
+  //For the real lab
+  //displayBlink();
+  //path();
+
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -169,7 +175,7 @@ void displayBlink() {
 *
 * Description
 * *************
-* The path for lab 2.
+* The path for lab 3.
 *
 * Parameters
 * *************
@@ -182,26 +188,10 @@ void displayBlink() {
 *
 *************************************************************************/ 
 void path() {
-  singlePrint("Path", 6);
-
-  moveTilesForward(2); 
-  turnDegreesRight(90);
-  moveTilesForward(2);
-  turnDegreesRight(90);
-  moveTilesForward(3);
-  turnDegreesRight(90);
-  moveTilesForward(3);
-  turnDegreesRight(90);
-  moveTilesForward(2);
-  turnDegreesLeft(45);
-  moveTilesForward(1.41);
-  turnDegreesLeft(135);
-  moveTilesForward(4);
-  turnDegreesLeft(90);
-  moveTilesForward(2);
-  turnDegreesLeft(90);
-  moveTilesForward(2);
-  fullStop();
+  while(true) {
+    moveTilesForward(1);
+    delay(1000);
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -875,8 +865,10 @@ int degressToTicks(int degrees) {
 *
 *************************************************************************/ 
 void turnHeadTo(int degree) {
-  if(degree < MAX_LEFT_HEAD_TURN) degree = MAX_LEFT_HEAD_TURN;
-  else if(degree > MAX_RIGHT_HEAD_TURN) degree = MAX_RIGHT_HEAD_TURN;
+  if(degree < MAX_LEFT_HEAD_TURN) 
+    degree = MAX_LEFT_HEAD_TURN;
+  else if(degree > MAX_RIGHT_HEAD_TURN) 
+    degree = MAX_RIGHT_HEAD_TURN;
 
   if(!isHeadAttached) headServo.attach(HEAD_MOTOR);
 
@@ -906,7 +898,8 @@ void turnHeadTo(int degree) {
 *
 *************************************************************************/
 void scanHead() {
-  int nextDegree = headServo.read(); //gets the last written value
+  //gets the last written value without the correction
+  int nextDegree = headServo.read() - FULL_LEFT_DEGREE;
 
   if(scanningLeft) {
     nextDegree -= DEGREES_PER_ITERATION;
@@ -1192,6 +1185,26 @@ byte readTemperatureSensor() {
   return Wire.read();
 }
 
+/************************************************************************
+*
+* Name
+* *************
+* printTemp
+*
+* Description
+* *************
+* Gets the temperature from the sensor and prints it to the LCD screen.
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* None
+*
+*
+*************************************************************************/ 
 void printTemp() {
   char temperatureString[11];
   String temp = String(readTemperatureSensor()) + " degrees";
