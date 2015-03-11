@@ -79,7 +79,7 @@ SoftwareSerial LCD(0, lcd_pin_number);
 // SONAR SENSOR CONSTANTS
 #define SONAR 22 //TODO set
 #define COLLISION_DISTANCE 10
-#define TICKS_PER_COLLISION 5
+#define TICKS_PER_COLLISION 1
 long distance = 0; 
 
 
@@ -185,25 +185,10 @@ void displayBlink() {
 *************************************************************************/ 
 void path() {
   singlePrint("Path", 6);
-
-  moveTilesForward(2); 
-  turnDegreesRight(90);
-  moveTilesForward(2);
-  turnDegreesRight(90);
-  moveTilesForward(3);
-  turnDegreesRight(90);
-  moveTilesForward(3);
-  turnDegreesRight(90);
-  moveTilesForward(2);
-  turnDegreesLeft(45);
-  moveTilesForward(1.41);
-  turnDegreesLeft(135);
-  moveTilesForward(4);
-  turnDegreesLeft(90);
-  moveTilesForward(2);
-  turnDegreesLeft(90);
-  moveTilesForward(2);
-  fullStop();
+  while(true) {
+    moveTilesForward(1);
+    delay(1000);
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -442,6 +427,7 @@ void moveTicksForward(int numTicks) {
       ++numLeftTicks;
       leftReading = readLeftSensor();
       ++tickCounter;
+      ++tickCollisionCounter;
     }
 
     if(rightReading != readRightSensor()) {
