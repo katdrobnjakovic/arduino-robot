@@ -1170,6 +1170,26 @@ byte readTemperatureSensor() {
   return Wire.read();
 }
 
+/************************************************************************
+*
+* Name
+* *************
+* printTemp
+*
+* Description
+* *************
+* Gets the temperature from the sensor and prints it to the LCD screen.
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* None
+*
+*
+*************************************************************************/ 
 void printTemp() {
   char temperatureString[11];
   String temp = String(readTemperatureSensor()) + " degrees";
