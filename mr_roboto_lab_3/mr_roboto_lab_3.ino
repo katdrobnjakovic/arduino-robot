@@ -31,11 +31,10 @@ Servo headServo;
 boolean isHeadAttached;
 #define MAX_LEFT_HEAD_TURN 55
 #define MAX_RIGHT_HEAD_TURN 105
-#define DEGREES_PER_ITERATION 5
+#define DEGREES_PER_ITERATION 10
 #define FULL_LEFT_DEGREE 0 //this is what we consider zero, need to calibrate
 boolean scanningLeft;
 #define TICKS_PER_HEAD_MOVE 25 // TODO calibrate
-#define TICKS_PER_COLLISION 25 // TODO calibrate
 // WHEEL SENSOR CONSTANTS
 #define RIGHT_WHEEL_SENSOR 49
 #define LEFT_WHEEL_SENSOR 48
@@ -56,8 +55,10 @@ boolean isLeftAttached;
 #define THRESHOLD 2
 
 // TURN AND DISTANCE CONSTANTS
-#define TICKS_PER_DEGREE_LEFT 0.59
-#define TICKS_PER_DEGREE_RIGHT 0.58
+//#define TICKS_PER_DEGREE_LEFT 0.59
+//#define TICKS_PER_DEGREE_RIGHT 0.58
+#define TICKS_PER_DEGREE_LEFT 0.57
+#define TICKS_PER_DEGREE_RIGHT 0.60
 // right = 45
 // left = 49
 #define TICKS_PER_TILE 103
@@ -79,7 +80,7 @@ SoftwareSerial LCD(0, lcd_pin_number);
 // SONAR SENSOR CONSTANTS
 #define SONAR 22 //TODO set
 #define COLLISION_DISTANCE 10
-#define TICKS_PER_COLLISION 1
+#define TICKS_PER_COLLISION 20
 long distance = 0; 
 
 
@@ -122,6 +123,9 @@ void setup() {
 void loop() {
   //readTemperatureSensor();
   //Serial.print(readTemperatureSensor());
+  
+  displayBlink();
+  
   path();
   //printTemp();
  
@@ -187,6 +191,7 @@ void path() {
   singlePrint("Path", 6);
   while(true) {
     moveTilesForward(1);
+    fullStop();
     delay(1000);
   }
 }
@@ -318,6 +323,8 @@ void rightForward() {
 *
 *************************************************************************/ 
 void fullStop() {
+  rightStop();
+  delay(7);
   isLeftAttached = false;
   isRightAttached = false;
   leftServo.detach();
@@ -1149,6 +1156,9 @@ boolean isCollision() {
 }
 
 void collisionAvoidance() {
+  fullStop();
+  printTemp();
+  delay(5000);
   moveTilesBackward(1);
   turnDegreesRight(90);
   moveTilesForward(2);
