@@ -854,8 +854,10 @@ int degressToTicks(int degrees) {
 *
 *************************************************************************/ 
 void turnHeadTo(int degree) {
-  if(degree < MAX_LEFT_HEAD_TURN) degree = MAX_LEFT_HEAD_TURN;
-  else if(degree > MAX_RIGHT_HEAD_TURN) degree = MAX_RIGHT_HEAD_TURN;
+  if(degree < MAX_LEFT_HEAD_TURN) 
+    degree = MAX_LEFT_HEAD_TURN;
+  else if(degree > MAX_RIGHT_HEAD_TURN) 
+    degree = MAX_RIGHT_HEAD_TURN;
 
   if(!isHeadAttached) headServo.attach(HEAD_MOTOR);
 
@@ -885,7 +887,8 @@ void turnHeadTo(int degree) {
 *
 *************************************************************************/
 void scanHead() {
-  int nextDegree = headServo.read(); //gets the last written value
+  //gets the last written value without the correction
+  int nextDegree = headServo.read() - FULL_LEFT_DEGREE;
 
   if(scanningLeft) {
     nextDegree -= DEGREES_PER_ITERATION;
