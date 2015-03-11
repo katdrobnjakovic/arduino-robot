@@ -101,7 +101,7 @@ void setup() {
   isRightAttached = false;
 
   //Center the head
-  turnHeadTo(90);
+  turnHeadTo(90 + FULL_LEFT_DEGREE);
 
   //Start the head scanning left
 
