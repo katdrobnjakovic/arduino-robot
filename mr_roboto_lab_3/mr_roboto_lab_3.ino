@@ -29,13 +29,12 @@
 #define HEAD_MOTOR 7
 Servo headServo;
 boolean isHeadAttached;
-#define MAX_LEFT_HEAD_TURN 75
+#define MAX_LEFT_HEAD_TURN 55
 #define MAX_RIGHT_HEAD_TURN 105
-#define DEGREES_PER_ITERATION 5
+#define DEGREES_PER_ITERATION 10
 #define FULL_LEFT_DEGREE 0 //this is what we consider zero, need to calibrate
 boolean scanningLeft;
 #define TICKS_PER_HEAD_MOVE 25 // TODO calibrate
-
 // WHEEL SENSOR CONSTANTS
 #define RIGHT_WHEEL_SENSOR 49
 #define LEFT_WHEEL_SENSOR 48
@@ -56,8 +55,10 @@ boolean isLeftAttached;
 #define THRESHOLD 2
 
 // TURN AND DISTANCE CONSTANTS
-#define TICKS_PER_DEGREE_LEFT 0.59
-#define TICKS_PER_DEGREE_RIGHT 0.58
+//#define TICKS_PER_DEGREE_LEFT 0.59
+//#define TICKS_PER_DEGREE_RIGHT 0.58
+#define TICKS_PER_DEGREE_LEFT 0.57
+#define TICKS_PER_DEGREE_RIGHT 0.60
 // right = 45
 // left = 49
 #define TICKS_PER_TILE 103
@@ -78,6 +79,10 @@ SoftwareSerial LCD(0, lcd_pin_number);
 
 // SONAR SENSOR CONSTANTS
 #define SONAR 22 //TODO set
+#define COLLISION_DISTANCE 10
+#define TICKS_PER_COLLISION 20
+long distance = 0; 
+
 
 // TEMPERATURE SENSOR CONSTANTS
 #define TEMP_SENSOR 0x68 //address
@@ -118,12 +123,12 @@ void setup() {
 void loop() {
   //readTemperatureSensor();
   //Serial.print(readTemperatureSensor());
-  delay(3000);
-  printTemp();
-
-  //For the real lab
-  //displayBlink();
-  //path();
+  
+  displayBlink();
+  
+  path();
+  //printTemp();
+ 
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -170,7 +175,7 @@ void displayBlink() {
 *
 * Description
 * *************
-* The path for lab 3.
+* The path for lab 2.
 *
 * Parameters
 * *************
@@ -183,8 +188,10 @@ void displayBlink() {
 *
 *************************************************************************/ 
 void path() {
+  singlePrint("Path", 6);
   while(true) {
     moveTilesForward(1);
+    fullStop();
     delay(1000);
   }
 }
@@ -316,6 +323,8 @@ void rightForward() {
 *
 *************************************************************************/ 
 void fullStop() {
+  rightStop();
+  delay(7);
   isLeftAttached = false;
   isRightAttached = false;
   leftServo.detach();
@@ -412,6 +421,7 @@ void moveTicksForward(int numTicks) {
   boolean rightReading = readLeftSensor();
 
   int tickCounter = 0;
+  int tickCollisionCounter = 0;
   int numLeftTicks = -1; //TODO why is this -1???
   int numRightTicks = 0;
 
@@ -424,6 +434,7 @@ void moveTicksForward(int numTicks) {
       ++numLeftTicks;
       leftReading = readLeftSensor();
       ++tickCounter;
+      ++tickCollisionCounter;
     }
 
     if(rightReading != readRightSensor()) {
@@ -447,6 +458,16 @@ void moveTicksForward(int numTicks) {
     {
       tickCounter = 0;
       scanHead();
+    }
+    
+    if(tickCollisionCounter >= TICKS_PER_COLLISION)
+    {
+       tickCollisionCounter = 0; 
+       if(isCollision() == true) {
+         collisionAvoidance();
+         return; 
+       }
+       
     }
   }
 
@@ -854,10 +875,8 @@ int degressToTicks(int degrees) {
 *
 *************************************************************************/ 
 void turnHeadTo(int degree) {
-  if(degree < MAX_LEFT_HEAD_TURN) 
-    degree = MAX_LEFT_HEAD_TURN;
-  else if(degree > MAX_RIGHT_HEAD_TURN) 
-    degree = MAX_RIGHT_HEAD_TURN;
+  if(degree < MAX_LEFT_HEAD_TURN) degree = MAX_LEFT_HEAD_TURN;
+  else if(degree > MAX_RIGHT_HEAD_TURN) degree = MAX_RIGHT_HEAD_TURN;
 
   if(!isHeadAttached) headServo.attach(HEAD_MOTOR);
 
@@ -887,8 +906,7 @@ void turnHeadTo(int degree) {
 *
 *************************************************************************/
 void scanHead() {
-  //gets the last written value without the correction
-  int nextDegree = headServo.read() - FULL_LEFT_DEGREE;
+  int nextDegree = headServo.read(); //gets the last written value
 
   if(scanningLeft) {
     nextDegree -= DEGREES_PER_ITERATION;
@@ -1131,6 +1149,24 @@ long readSonarSensor() {
   return pulseIn(SONAR, HIGH);
 }
 
+boolean isCollision() {
+  long pulseDuration = readSonarSensor();
+  long distance = pulseDuration / (29 *2);
+  return distance <= COLLISION_DISTANCE;
+}
+
+void collisionAvoidance() {
+  fullStop();
+  printTemp();
+  delay(5000);
+  moveTilesBackward(1);
+  turnDegreesRight(90);
+  moveTilesForward(2);
+  turnDegreesLeft(90);
+}
+
+
+
 /************************************************************************
 *
 * Name
@@ -1160,26 +1196,6 @@ byte readTemperatureSensor() {
   return Wire.read();
 }
 
-/************************************************************************
-*
-* Name
-* *************
-* printTemp
-*
-* Description
-* *************
-* Gets the temperature from the sensor and prints it to the LCD screen.
-*
-* Parameters
-* *************
-* None
-*
-* Returns
-* *************
-* None
-*
-*
-*************************************************************************/ 
 void printTemp() {
   char temperatureString[11];
   String temp = String(readTemperatureSensor()) + " degrees";
