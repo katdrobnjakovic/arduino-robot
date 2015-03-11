@@ -35,7 +35,7 @@ boolean isHeadAttached;
 #define FULL_LEFT_DEGREE 0 //this is what we consider zero, need to calibrate
 boolean scanningLeft;
 #define TICKS_PER_HEAD_MOVE 25 // TODO calibrate
-
+#define TICKS_PER_COLLISION 25 // TODO calibrate
 // WHEEL SENSOR CONSTANTS
 #define RIGHT_WHEEL_SENSOR 49
 #define LEFT_WHEEL_SENSOR 48
@@ -78,6 +78,7 @@ SoftwareSerial LCD(0, lcd_pin_number);
 
 // SONAR SENSOR CONSTANTS
 #define SONAR 22 //TODO set
+long distance = 0; 
 
 // TEMPERATURE SENSOR CONSTANTS
 #define TEMP_SENSOR 0x68 //address
@@ -118,8 +119,9 @@ void setup() {
 void loop() {
   //readTemperatureSensor();
   //Serial.print(readTemperatureSensor());
-  delay(3000);
-  printTemp();
+  scanHead();
+  delay(500);
+  //printTemp();
  
 }
 
@@ -425,6 +427,7 @@ void moveTicksForward(int numTicks) {
   boolean rightReading = readLeftSensor();
 
   int tickCounter = 0;
+  int tickCollisionCounter = 0;
   int numLeftTicks = -1; //TODO why is this -1???
   int numRightTicks = 0;
 
@@ -460,6 +463,11 @@ void moveTicksForward(int numTicks) {
     {
       tickCounter = 0;
       scanHead();
+    }
+    
+    if(tickCollisionCounter >= TICKS_PER_COLLISION)
+    {
+       //DO THINGS 
     }
   }
 
@@ -1140,6 +1148,20 @@ long readSonarSensor() {
   pinMode(SONAR, INPUT);
   return pulseIn(SONAR, HIGH);
 }
+
+/*void isCollision(long pulseDuration) {
+  distance = pulseDuration / (29 *2)
+}
+
+void collisionAvoidance() {
+  moveTilesBackward(1);
+  turnDegreesRight(90);
+  moveTilesForward(2);
+  turnDegreesLeft(90);
+  path();
+}*/
+
+
 
 /************************************************************************
 *
