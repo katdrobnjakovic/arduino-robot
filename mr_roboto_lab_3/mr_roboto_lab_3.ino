@@ -1149,12 +1149,53 @@ long readSonarSensor() {
   return pulseIn(SONAR, HIGH);
 }
 
+/************************************************************************
+*
+* Name
+* *************
+* isCollision
+*
+* Description
+* *************
+* Uses readSonarSensor to decide whether an object is 10 cm away or closer.
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* boolean - true if there is an object is detected within 10 cm, 
+*           false otherwise
+*
+*
+*************************************************************************/ 
 boolean isCollision() {
   long pulseDuration = readSonarSensor();
   long distance = pulseDuration / (29 *2);
   return distance <= COLLISION_DISTANCE;
 }
 
+/************************************************************************
+*
+* Name
+* *************
+* collisionAvoidance
+*
+* Description
+* *************
+* The tasks and path the robot takes when a collision is detected.
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* None
+*
+*
+*************************************************************************/ 
 void collisionAvoidance() {
   fullStop();
   printTemp();
