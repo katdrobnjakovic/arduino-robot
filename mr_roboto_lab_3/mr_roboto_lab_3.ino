@@ -120,7 +120,10 @@ void loop() {
   //Serial.print(readTemperatureSensor());
   delay(3000);
   printTemp();
- 
+
+  //For the real lab
+  //displayBlink();
+  //path();
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -167,7 +170,7 @@ void displayBlink() {
 *
 * Description
 * *************
-* The path for lab 2.
+* The path for lab 3.
 *
 * Parameters
 * *************
@@ -180,26 +183,10 @@ void displayBlink() {
 *
 *************************************************************************/ 
 void path() {
-  singlePrint("Path", 6);
-
-  moveTilesForward(2); 
-  turnDegreesRight(90);
-  moveTilesForward(2);
-  turnDegreesRight(90);
-  moveTilesForward(3);
-  turnDegreesRight(90);
-  moveTilesForward(3);
-  turnDegreesRight(90);
-  moveTilesForward(2);
-  turnDegreesLeft(45);
-  moveTilesForward(1.41);
-  turnDegreesLeft(135);
-  moveTilesForward(4);
-  turnDegreesLeft(90);
-  moveTilesForward(2);
-  turnDegreesLeft(90);
-  moveTilesForward(2);
-  fullStop();
+  while(true) {
+    moveTilesForward(1);
+    delay(1000);
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////
