@@ -324,7 +324,7 @@ void rightForward() {
 *************************************************************************/ 
 void fullStop() {
   rightStop();
-  delay(7);
+  delay(5);
   isLeftAttached = false;
   isRightAttached = false;
   leftServo.detach();
