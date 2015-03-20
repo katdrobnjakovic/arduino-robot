@@ -50,7 +50,7 @@ boolean isLeftAttached;
 #define TICKS_PER_DEGREE_LEFT 0.57
 #define TICKS_PER_DEGREE_RIGHT 0.60
 #define TICKS_PER_TILE 103
-#define TICKS_PER_CM 20 //TODO calibrates
+#define TICKS_PER_CM 20 //TODO calibrate
 
 // LCD CONSTANTS
 int lcd_pin_number = 19;
@@ -397,17 +397,75 @@ void displayBlink() {
 ///////////////////// LAB 4 COMMANDS FUNCTIONS //////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
-//TODO docs
+/************************************************************************
+*
+* Name
+* *************
+* moveCMForward
+*
+* Description
+* *************
+* Moves the robot forward by the passed in number of centimeters
+*
+* Parameters
+* *************
+* cm - the number of centimeters to move forward
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/ 
 void moveCMForward(int cm) {
   moveTicksForward(cm * TICKS_PER_CM);
 }
 
-//TOOD docs
+/************************************************************************
+*
+* Name
+* *************
+* moveCMBackward
+*
+* Description
+* *************
+* Moves the robot backwards by the passed in number of centimeters
+*
+* Parameters
+* *************
+* cm - the number of centimeters to move backwards
+*
+* Returns
+* *************
+* void
+*
+*
+*************************************************************************/
 void moveCMBackwards(int cm) {
   moveTicksBackward(cm * TICKS_PER_CM);
 }
 
-//TODO docs
+/************************************************************************
+*
+* Name
+* *************
+* readTemperature
+*
+* Description
+* *************
+* Reads the temperature from the temperature sensor, and returns it as a 
+* c-String.
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* char* - the temperature as a c-string.
+*
+*
+*************************************************************************/
 char* readTemperature() {
   char tempString[10];
   byte temp = readTemperatureSensor();
@@ -415,10 +473,31 @@ char* readTemperature() {
   return tempString;
 }
 
-//TODO docs
+/************************************************************************
+*
+* Name
+* *************
+* readDistance
+*
+* Description
+* *************
+* Reads the distance using the sonar sensor and returns the result in 
+* centmeters as a c-String.
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* char* - the distance to the nearest straight-ahead object in centimeters,
+* as a c-String. 
+*
+*
+*************************************************************************/
 char* readDistance() {
   char distString[10];
-  long distance = readSonarSensor() / (29 *2);
+  long distance = readSonarSensor() / (29 * 2);
   sptrinf(distString, "%d", distance);
   return distString;
 }
@@ -647,7 +726,7 @@ void moveTicksForward(int numTicks) {
   boolean leftReading = readLeftSensor();
   boolean rightReading = readLeftSensor();
 
-  int numLeftTicks = -1; //TODO why is this -1???
+  int numLeftTicks = -1;
   int numRightTicks = 0;
 
   leftForward();
