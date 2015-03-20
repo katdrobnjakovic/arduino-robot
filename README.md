@@ -1,2 +1,2 @@
 # arduino-robot
-Mrs/Mr Roboto, a robot built using arduino!
+Ms/Mr Roboto, a robot built using arduino!
