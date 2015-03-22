@@ -23,9 +23,21 @@
 #include <Wirefree.h>
 #include <WifiClient.h> 
 
+//DEBUG MODE FLAG
+#define SERIAL_DEBUG false
+
 // MOTOR CONSTANTS
 #define LEFT_MOTOR 45
 #define RIGHT_MOTOR 8
+
+//HEAD CONSTANTS
+#define HEAD_MOTOR 7
+Servo headServo;
+boolean isHeadAttached;
+#define MAX_LEFT_HEAD_TURN 55
+#define MAX_RIGHT_HEAD_TURN 105
+#define DEGREES_PER_ITERATION 10
+#define FULL_LEFT_DEGREE 0 //this is what we consider zero, need to calibrate
 
 // WHEEL SENSOR CONSTANTS
 #define RIGHT_WHEEL_SENSOR 49
@@ -98,7 +110,7 @@ struct Command {
   char cmd;
   int integerParam;
   bool allGood;
-  char[100] result;
+  char result[100];
 };
 
 void setup() {
@@ -126,35 +138,60 @@ void setup() {
   //Initialized serial port for debug
   Serial.begin(9600); 
 
-  // connect to AP
-  Wireless.begin(&wireless_prof);
-
-  if(client.connect()) {
-    Serial.println("connected");
-    client.println("Hello from Ms. Roboto") //Send this to computer
+  if(!SERIAL_DEBUG) {
+    // connect to AP
+    Wireless.begin(&wireless_prof);
+  
+    if(client.connect()) {
+      Serial.println("connected");
+      client.println("Hello from Ms. Roboto"); //Send this to computer
+    } else {
+      Serial.println("failed");
+    }
   } else {
-    Serial.println("failed");
+    Serial.println("Done setup");
   }
 }
 
 void loop() {
-  if(client.available()) {
-    int index = 0;
-
+  char message[10]; //Arbitrarily long array
+  int index = 0;
+  boolean inputToParse = false;
+  
+  if(SERIAL_DEBUG) {
+    while(Serial.available()) {
+        Serial.println("Input Detected");
+        char in = (char)Serial.read();
+  
+        message[index++] = in;
+        inputToParse = true;
+    }
+  
+    if(inputToParse) {
+      message[index] = '\0';
+      Serial.println(message);
+      struct Command command = parseCommandString(message);
+      command = runCommand(command);
+      Serial.println(buildResponse(command));
+      inputToParse = false;
+    }
+  } else {
     while(client.available()) {
-      char message[10] = {'\0'}; //Arbitrarily long array
-      char in;
-      
-      while((in = client.read()) == -1); //blocking while reading
+      message[0] = '\0'; 
+      char in = (char)client.read();
 
       message[index++] = in;
+      inputToParse = true;
     }
-
-    message[index] = '\0';
-
-    Command command = parseCommandString(message);
-    command = runCommand(command);
-    sendResponse(command);
+    
+    if(inputToParse) {
+      message[index] = '\0';
+  
+      struct Command command = parseCommandString(message);
+      command = runCommand(command);
+      sendResponse(command);
+      inputToParse = false;
+    }
   }
 
   delay(1);
@@ -186,9 +223,9 @@ void loop() {
 *
 *
 *************************************************************************/ 
-Command parseCommandString(char* message) {
+struct Command parseCommandString(char* message) {
   struct Command command;
-  command.cmd = message[0] 
+  command.cmd = message[0];
   command.allGood = true;
 
   int index = 0;
@@ -204,14 +241,14 @@ Command parseCommandString(char* message) {
     // Read to the end of the input array, not good. Set a flag in the
     // command and break the loop
     if(index > 9) {
-      allGood = false;
+      command.allGood = false;
       break;
     }
 
     // Set that digit of the parameter
     param[index] = message[index + 2];
+    index++;
   }
-
   return command;
 }
 
@@ -237,7 +274,7 @@ Command parseCommandString(char* message) {
 *
 *
 *************************************************************************/ 
-Command runCommand(struct Command command) {
+struct Command runCommand(struct Command command) {
   char message[100];
 
   if(!command.allGood) {
@@ -247,12 +284,16 @@ Command runCommand(struct Command command) {
 
   if(command.cmd == 'f') {
     moveCMForward(command.integerParam);
+    message[0] = '\0';
   } else if(command.cmd == 'b') {
     moveCMBackwards(command.integerParam);
+    message[0] = '\0';
   } else if(command.cmd == 'r') {
     turnDegreesRight(command.integerParam);
+    message[0] = '\0';
   } else if(command.cmd == 'l') {
     turnDegreesLeft(command.integerParam);
+    message[0] = '\0';
   } else if(command.cmd == 'p') {
     strcpy(message, readDistance());
   } else if(command.cmd == 't') {
@@ -290,7 +331,7 @@ Command runCommand(struct Command command) {
 *
 *
 *************************************************************************/ 
-Command setError(struct Command command, char* message) {
+struct Command setError(struct Command command, char* message) {
   command.cmd = 'e';
   strcpy(command.result, message);
   return command;
@@ -317,7 +358,7 @@ Command setError(struct Command command, char* message) {
 *
 *************************************************************************/ 
 void sendResponse(struct Command command) {
-  char* response = buildResponse() 
+  char* response = buildResponse(command);
   client.println(response);
 }
 
@@ -356,6 +397,7 @@ char* buildResponse(struct Command command) {
     }
 
     response[index + 2] = command.result[index];
+    index++;
   }
 
   return response;
@@ -418,7 +460,12 @@ void displayBlink() {
 *
 *************************************************************************/ 
 void moveCMForward(int cm) {
-  moveTicksForward(cm * TICKS_PER_CM);
+  if(!SERIAL_DEBUG) {
+    moveTicksForward(cm * TICKS_PER_CM);
+  } else {
+    Serial.print("Moving forward ");
+    Serial.println(cm);
+  }
 }
 
 /************************************************************************
@@ -442,7 +489,12 @@ void moveCMForward(int cm) {
 *
 *************************************************************************/
 void moveCMBackwards(int cm) {
-  moveTicksBackward(cm * TICKS_PER_CM);
+  if(!SERIAL_DEBUG) {
+    moveTicksBackward(cm * TICKS_PER_CM);
+  } else {
+    Serial.print("Moving backward ");
+    Serial.println(cm);
+  }
 }
 
 /************************************************************************
@@ -467,10 +519,15 @@ void moveCMBackwards(int cm) {
 *
 *************************************************************************/
 char* readTemperature() {
-  char tempString[10];
-  byte temp = readTemperatureSensor();
-  sprintf(tempString, "%d", temp);
-  return tempString;
+  if(!SERIAL_DEBUG) {
+    char tempString[10];
+    byte temp = readTemperatureSensor();
+    sprintf(tempString, "%d", temp);
+    return tempString;
+  } else {
+    Serial.println("Reading the temperature");
+    return "10 degrees C"; 
+  }
 }
 
 /************************************************************************
@@ -496,10 +553,15 @@ char* readTemperature() {
 *
 *************************************************************************/
 char* readDistance() {
-  char distString[10];
-  long distance = readSonarSensor() / (29 * 2);
-  sptrinf(distString, "%d", distance);
-  return distString;
+  if(!SERIAL_DEBUG) {
+    char distString[10];
+    long distance = readSonarSensor() / (29 * 2);
+    sprintf(distString, "%d", distance);
+    return distString;
+  } else {
+    Serial.println("Reading the distance");
+    return "1000 cm"; 
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -737,8 +799,6 @@ void moveTicksForward(int numTicks) {
     if(leftReading != readLeftSensor()) {
       ++numLeftTicks;
       leftReading = readLeftSensor();
-      ++tickCounter;
-      ++tickCollisionCounter;
     }
 
     if(rightReading != readRightSensor()) {
@@ -1055,7 +1115,12 @@ void moveTilesBackward(float numTiles) {
 *
 *************************************************************************/
 void turnDegreesLeft(int numDegrees) {
-  turnTicksLeft(numDegrees * TICKS_PER_DEGREE_LEFT);
+  if(!SERIAL_DEBUG) {
+    turnTicksLeft(numDegrees * TICKS_PER_DEGREE_LEFT);
+  } else {
+    Serial.print("Turning left ");
+    Serial.println(numDegrees);
+  }
 }
 
 /************************************************************************
@@ -1079,7 +1144,12 @@ void turnDegreesLeft(int numDegrees) {
 *
 *************************************************************************/
 void turnDegreesRight(int numDegrees) {
-  turnTicksRight(numDegrees * TICKS_PER_DEGREE_RIGHT);
+  if(!SERIAL_DEBUG) {
+    turnTicksRight(numDegrees * TICKS_PER_DEGREE_RIGHT);
+  } else {
+    Serial.print("Turning right ");
+    Serial.println(numDegrees);
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -1521,44 +1591,4 @@ void attachRightServo() {
     isRightAttached = true;
     rightServo.attach(RIGHT_MOTOR);
   }
-}
-
-/************************************************************************
-*
-* Name
-* *************
-* SerialEvent
-*
-* Description
-* *************
-* Called after each interation of loop, if there is serial data waiting to be
-* processed. This is used for debugging the command receiving, executing, and
-* response sending, without the need for a wifi connection.
-*
-* Parameters
-* *************
-* None
-*
-* Returns
-* *************
-* void
-*
-*
-*************************************************************************/ 
-void SerialEvent() {
-  int index = 0;
-  while(client.available()) {
-      char message[10] = {'\0'}; //Arbitrarily long array
-      char in;
-      
-      while((in = client.read()) == -1); //blocking while reading
-
-      message[index++] = in;
-    }
-
-    message[index] = '\0';
-
-    Command command = parseCommandString(message);
-    command = runCommand(command);
-    Serial.println(buildResponse(command));
 }
