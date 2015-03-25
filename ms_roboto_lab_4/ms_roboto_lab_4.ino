@@ -4,8 +4,8 @@
 *        Kat Drobnjakovic
 *
 * Course Code: SEG 4145
-* Lab Number: 3
-* File name: mr_roboto_lab_2
+* Lab Number: 4
+* File name: ms_roboto_lab_4
 * Date: March 12, 2015
 *
 *
@@ -24,7 +24,8 @@
 #include <WifiClient.h> 
 
 //DEBUG MODE FLAG
-#define SERIAL_DEBUG false
+#define SERIAL_DEBUG false // If true, only parse commands
+#define SERIAL_COMMAND false // If true, does not wireless stuff
 
 // MOTOR CONSTANTS
 #define LEFT_MOTOR 45
@@ -138,7 +139,7 @@ void setup() {
   //Initialized serial port for debug
   Serial.begin(9600); 
 
-  if(!SERIAL_DEBUG) {
+  if(!SERIAL_DEBUG && !SERIAL_COMMAND) {
     // connect to AP
     Wireless.begin(&wireless_prof);
   
@@ -158,13 +159,13 @@ void loop() {
   int index = 0;
   boolean inputToParse = false;
   
-  if(SERIAL_DEBUG) {
+  if(SERIAL_DEBUG || SERIAL_COMMAND) {
     while(Serial.available()) {
-        Serial.println("Input Detected");
         char in = (char)Serial.read();
   
         message[index++] = in;
         inputToParse = true;
+        delay(1);
     }
   
     if(inputToParse) {
@@ -182,6 +183,7 @@ void loop() {
 
       message[index++] = in;
       inputToParse = true;
+      delay(1);
     }
     
     if(inputToParse) {
