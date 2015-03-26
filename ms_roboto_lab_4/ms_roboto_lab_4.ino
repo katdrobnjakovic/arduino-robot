@@ -26,6 +26,7 @@
 //DEBUG MODE FLAG
 #define SERIAL_DEBUG false // If true, only parse commands
 #define SERIAL_COMMAND false // If true, does not wireless stuff
+#define WIRELESS_DEBUG true
 
 // MOTOR CONSTANTS
 #define LEFT_MOTOR 45
@@ -91,12 +92,12 @@ int tempurature_reg = 0x01;
 WIFI_PROFILE wireless_prof = {
                 /* SSID */ "Robolab",
  /* WPA/WPA2 passphrase */ "w1r3l3ss!",
-    /* Robot IP address */ "192.168.150.16",
+    /* Robot IP address */ "10.136.160.16",
          /* subnet mask */ "255.255.255.0",
-          /* Gateway IP */ "192.168.150.1" };
+          /* Gateway IP */ "10.136.160.1" };
 
 //TODO PUT IN COMPUTER IP
-String remote_server = "192.168.150.105"; // peer device IP address
+String remote_server = "137.122.45.79"; // peer device IP address
 
 String remote_port = "32114"; // arbitrary port
 
@@ -250,6 +251,11 @@ struct Command parseCommandString(char* message) {
     // Set that digit of the parameter
     param[index] = message[index + 2];
     index++;
+    
+    
+  }
+  if (WIRELESS_DEBUG) {
+    command.allGood = false; 
   }
   return command;
 }
@@ -280,33 +286,44 @@ struct Command runCommand(struct Command command) {
   char message[100];
 
   if(!command.allGood) {
-    strcpy(message, "Command parameter overran the input array");
+    if (!WIRELESS_DEBUG) {
+      strcpy(message, "Command parameter overran the input array");
+    }
+    else {
+      strcpy(message, "Is in WIRELESS_DEBUG mode");
+    }
     return setError(command, message);
   }
 
   if(command.cmd == 'f') {
     moveCMForward(command.integerParam);
     message[0] = '\0';
+    command.cmd = 'd';
   } else if(command.cmd == 'b') {
     moveCMBackwards(command.integerParam);
     message[0] = '\0';
+    command.cmd = 'd';
   } else if(command.cmd == 'r') {
     turnDegreesRight(command.integerParam);
     message[0] = '\0';
+    command.cmd = 'd';
   } else if(command.cmd == 'l') {
     turnDegreesLeft(command.integerParam);
     message[0] = '\0';
+    command.cmd = 'd';
   } else if(command.cmd == 'p') {
     strcpy(message, readDistance());
+    command.cmd = 'w';
   } else if(command.cmd == 't') {
     strcpy(message, readTemperature());
+    command.cmd = 'w';
   } else {
     command.allGood = false;
     strcpy(message, "Unrecognized command character");
     return setError(command, message);
   }
 
-  command.cmd = 'd';
+  
   strcpy(command.result, message);
   return command;
 }
