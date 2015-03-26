@@ -283,7 +283,7 @@ struct Command parseCommandString(char* message) {
 *
 *************************************************************************/ 
 struct Command runCommand(struct Command command) {
-  char message[100];
+  char message[1024];
 
   if(!command.allGood) {
     if (!WIRELESS_DEBUG) {

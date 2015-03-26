@@ -46,59 +46,58 @@ class MsRobotoLab4
 	public final static String DISTANCE = "p";
 	public final static String TEMPERATURE = "t";
 	
-/************************************************************************
-*
-* Name
-* *************
-* displayInstructions
-*
-* Description
-* *************
-* Displays the starting commands. 
-*
-* Parameters
-* *************
-* None
-*
-* Returns
-* *************
-* void
-*
-*
-*************************************************************************/ 
-    static void displayInstructions()
-    {
-    	System.out.println("\n\nEnter the correct number to select an operation:");
-      System.out.println("\t1 - Move the robot forward.");
-      System.out.println("\t2 - Move the robot backward.");
-      System.out.println("\t3 - Rotate the robot clockwise.");
-      System.out.println("\t4 - Rotate the robot counter clockwise.");
-      System.out.println("\t5 - Read the distance to the nearest object.");
-      System.out.println("\t6 - Read temperature values.");
-      System.out.println("\t7 - Quit.");
-    }
-/************************************************************************
-*
-* Name
-* *************
-* startConnection
-*
-* Description
-* *************
-* Starts the socket connection and waits for the robot to connect. 
-*
-* Parameters
-* *************
-* Port ID
-*
-* Returns
-* *************
-* void
-*
-*
-*************************************************************************/ 
-public void startConnection(int port) throws IOException 
-  {
+	/************************************************************************
+	*
+	* Name
+	* *************
+	* displayInstructions
+	*
+	* Description
+	* *************
+	* Displays the available commands. 
+	*
+	* Parameters
+	* *************
+	* None
+	*
+	* Returns
+	* *************
+	* void
+	*
+	*
+	*************************************************************************/ 
+  public void displayInstructions() {
+  	System.out.println("\n\nEnter the correct number to select an operation:");
+    System.out.println("\t1 - Move the robot forward.");
+    System.out.println("\t2 - Move the robot backward.");
+    System.out.println("\t3 - Rotate the robot clockwise.");
+    System.out.println("\t4 - Rotate the robot counter clockwise.");
+    System.out.println("\t5 - Read the distance to the nearest object.");
+    System.out.println("\t6 - Read temperature values.");
+    System.out.println("\t7 - Quit.");
+  }
+
+	/************************************************************************
+	*
+	* Name
+	* *************
+	* startConnection
+	*
+	* Description
+	* *************
+	* Starts the socket connection and waits for the robot to connect. 
+	*
+	* Parameters
+	* *************
+	* Port ID
+	*
+	* Returns
+	* *************
+	* void
+	*
+	*
+	*************************************************************************/ 
+	public void startConnection(int port) throws IOException {
 		System.out.println("Starting server..");
 		servSock = new DatagramSocket(port);
 		System.out.println("Server is listening on port: " + port);
@@ -108,72 +107,113 @@ public void startConnection(int port) throws IOException
 		System.out.println("Connected established with Ms Roboto!! <3");
 	}
 
+	/************************************************************************
+		*
+		* Name
+		* *************
+		* receive
+		*
+		* Description
+		* *************
+		* Waits for a message from the robot and receives it from the DatagramSocket
+		*
+		* Parameters
+		* *************
+		* None
+		*
+		* Returns
+		* *************
+		* String - the message from the robot.
+		*
+		*
+		*************************************************************************/
+	public String receive() throws IOException {
+		byte[] data = new byte[1024];
+		DatagramPacket receivePacket = new DatagramPacket(data, data.length);
+		servSock.receive(receivePacket);
+		return receivePacket.getData().toString();
+	}
 
-public String receive() throws IOException {
-	byte[] data = new byte[1024];
-	DatagramPacket receivePacket = new DatagramPacket(data, data.length);
-	servSock.receive(receivePacket);
-	return receivePacket.getData().toString();
-}
+	/************************************************************************
+	*
+	* Name
+	* *************
+	* send
+	*
+	* Description
+	* *************
+	* Sends a message to the robot over the DatagramSocket.
+	*
+	* Parameters
+	* *************
+	* String msg - the message to send to the robot.
+	*
+	* Returns
+	* *************
+	* void
+	*
+	*
+	*************************************************************************/
+	public void send(String msg) throws IOException {
+		byte[] data = new byte[1024]; 
+		data = msg.getBytes();
+		DatagramPacket sendPacket = new DatagramPacket(
+			data, 
+			data.length, 
+			InetAddress.getByName(ROBOT_IP), 
+			PORT
+		);
+		servSock.send(sendPacket);
+	}
 
-public void send(String msg) throws IOException {
-	byte[] data = new byte[1024]; 
-	data = msg.getBytes();
-	DatagramPacket sendPacket = new DatagramPacket(
-		data, 
-		data.length, 
-		InetAddress.getByName(ROBOT_IP), 
-		PORT
-	);
-	servSock.send(sendPacket);
-}
-
-/************************************************************************
-*
-* Name
-* *************
-* stopConnection
-*
-* Description
-* *************
-* Stops the socket and buffer reader. 
-*
-* Parameters
-* *************
-* None
-*
-* Returns
-* *************
-* void
-*
-*
-*************************************************************************/ 
+	/************************************************************************
+	*
+	* Name
+	* *************
+	* stopConnection
+	*
+	* Description
+	* *************
+	* Closes open system resources.
+	*
+	* Parameters
+	* *************
+	* None
+	*
+	* Returns
+	* *************
+	* void
+	*
+	*
+	*************************************************************************/ 
 	void stopConnection() throws IOException 
 	{
 		System.out.println("Stopping server..");
 		br.close();
 	}
-/************************************************************************
-*
-* Name
-* *************
-* distanceInput
-*
-* Description
-* *************
-* Reads the inputted distance for forward and backwards traversal from the buffer.
-*
-* Parameters
-* *************
-* None
-*
-* Returns
-* *************
-* int - the distance in cm (must be 0-20cm)
-*
-*
-*************************************************************************/ 
-	int distanceInput() 
+
+	/************************************************************************
+	*
+	* Name
+	* *************
+	* distanceInput
+	*
+	* Description
+	* *************
+	* Reads the inputted distance for forward and backwards traversal from the 
+	* buffer.
+	*
+	* Parameters
+	* *************
+	* None
+	*
+	* Returns
+	* *************
+	* int - the distance in cm (must be 0-20cm)
+	*
+	*
+	*************************************************************************/ 
+	public int distanceInput() 
 	{
 		int distance = -1;
 		while (distance < 0 || distance > 20) {
@@ -186,27 +226,29 @@ public void send(String msg) throws IOException {
 		}
 		return distance;
 	}
-/************************************************************************
-*
-* Name
-* *************
-* degreeInput
-*
-* Description
-* *************
-* Reads the inputted degree for clockwise and counter clockwise rotation from the buffer.
-*
-* Parameters
-* *************
-* None
-*
-* Returns
-* *************
-* int - the degree (must be 0-359 degrees)
-*
-*
-*************************************************************************/ 
-	int degreeInput() 
+
+	/************************************************************************
+	*
+	* Name
+	* *************
+	* degreeInput
+	*
+	* Description
+	* *************
+	* Reads the inputted degree for clockwise and counter clockwise rotation 
+	* from the buffer.
+	*
+	* Parameters
+	* *************
+	* None
+	*
+	* Returns
+	* *************
+	* int - the degree (must be 0-359 degrees)
+	*
+	*
+	*************************************************************************/ 
+	public int degreeInput() 
 	{
 		int degrees = -1;
 		while (degrees < 0 || degrees > 359) {
@@ -219,28 +261,29 @@ public void send(String msg) throws IOException {
 		}
 		return degrees;
 	}
-/************************************************************************
-*
-* Name
-* *************
-* getRobotoReply
-*
-* Description
-* *************
-* Gets the message from Ms Roboto
-*
-* Parameters
-* *************
-* None
-*
-* Returns
-* *************
-* String - the reply from Ms Roboto
-*
-*
-*************************************************************************/ 
-public void getRobotoReply(String resp) 
-	{
+
+	/************************************************************************
+	*
+	* Name
+	* *************
+	* parseRobotReply
+	*
+	* Description
+	* *************
+	* Parses the response from the robot. Sets instance variables (message, result)
+	* so the output is set properly.
+	*
+	* Parameters
+	* *************
+	* String resp - the raw response from the robot 
+	*
+	* Returns
+	* *************
+	* void
+	*
+	*
+	*************************************************************************/ 
+	public void parseRobotoReply(String resp) {
 		String cmd = resp.substring(0, 1);
 		if(cmd.equals(ROBOTO_SIMPLE_REPLY)) {
 			message = "Success - command done";
@@ -252,106 +295,107 @@ public void getRobotoReply(String resp)
 			message += resp.split(" ")[1];
 		}
 	}
-/************************************************************************
-*
-* Name
-* *************
-* sendMsg
-*
-* Description
-* *************
-* Sends the message to Ms Roboto
-*
-* Parameters
-* *************
-* None
-*
-* Returns
-* *************
-* void
-*
-*
-*************************************************************************/ 
-	void sendMsg(String msg) throws IOException {
+
+	/************************************************************************
+	*
+	* Name
+	* *************
+	* sendMsg
+	*
+	* Description
+	* *************
+	* Sends the message to Ms Roboto
+	*
+	* Parameters
+	* *************
+	* None
+	*
+	* Returns
+	* *************
+	* void
+	*
+	*
+	*************************************************************************/ 
+	public void sendMsg(String msg) throws IOException {
 		System.out.println("Message sent to Ms Roboto: " + msg);
 		send(msg);
 		System.out.println("Waiting for Ms Roboto to reply");
 		String response = receive();
-		getRobotoReply(response);
+		parseRobotoReply(response);
 	}
 
-/************************************************************************
-*
-* Name
-* *************
-* main
-*
-* Description
-* *************
-* Starts the server connection on a specified port. 
-* Calls the displayInstructions to list the available commands. 
-* Gets the input and calls the appropriate functions based on the requested command. 
-* Closes the connection.
-*
-* Parameters
-* *************
-* None
-*
-* Returns
-* *************
-* void
-*
-*
-*************************************************************************/ 
-    public static void main ( String[] args )
-    {
-      try {
-				MsRobotoLab4 robotoServer = new MsRobotoLab4();
-				robotoServer.startConnection(PORT);
-				robotoServer.br = new BufferedReader(new InputStreamReader(System.in));
-				int arg = -1;
+	/************************************************************************
+	*
+	* Name
+	* *************
+	* main
+	*
+	* Description
+	* *************
+	* Starts the server connection on a specified port. 
+	* Calls the displayInstructions to list the available commands. 
+	* Gets the input and calls the appropriate functions based on the requested 
+	* command. Closes the connection after the use quits.
+	*
+	* Parameters
+	* *************
+	* None
+	*
+	* Returns
+	* *************
+	* void
+	*
+	*
+	*************************************************************************/ 
+	public static void main ( String[] args )
+	{
+	  try {
+			MsRobotoLab4 robotoServer = new MsRobotoLab4();
+			robotoServer.startConnection(PORT);
+			robotoServer.br = new BufferedReader(new InputStreamReader(System.in));
+			int arg = -1;
 
-				while (true) {
-					displayInstructions();
-					int resInput = Integer.parseInt(robotoServer.br.readLine());
-					if (resInput == 1) {
-						arg = robotoServer.distanceInput();
-						robotoServer.sendMsg(FORWARD + " " +  Integer.toString(arg));
-					}
-					else if (resInput == 2) {
-						arg = robotoServer.distanceInput();
-						robotoServer.sendMsg(BACKWARD + " " + Integer.toString(arg));
-					} 
-					else if (resInput == 3) {
-						arg = robotoServer.degreeInput();
-						robotoServer.sendMsg(TURN_RIGHT + " " + Integer.toString(arg));
-					} 
-					else if (resInput == 4) {
-						arg = robotoServer.degreeInput();
-						robotoServer.sendMsg(TURN_LEFT + " " + Integer.toString(arg));
-					} 
-					else if (resInput == 5) {
-						robotoServer.sendMsg(DISTANCE);
-						robotoServer.message += " nearest object is " + 
-							Integer.toString(robotoServer.result) + " cm away.";
-					} else if (resInput == 6) {
-						robotoServer.sendMsg(TEMPERATURE);
-						robotoServer.message += " ambient temperature is " + 
-							Integer.toString(robotoServer.result) + "degrees C";
-					} 
-					else {// quit - input = 7
-						break;
-					}
-
-					System.out.println(robotoServer.message);
-					robotoServer.message = "";
-					arg = -1;
-					robotoServer.result = -1;
+			while (true) {
+				robotoServer.displayInstructions();
+				int resInput = Integer.parseInt(robotoServer.br.readLine());
+				if (resInput == 1) {
+					arg = robotoServer.distanceInput();
+					robotoServer.sendMsg(FORWARD + " " +  Integer.toString(arg));
 				}
-			
-				robotoServer.stopConnection();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}     	
-    }
+				else if (resInput == 2) {
+					arg = robotoServer.distanceInput();
+					robotoServer.sendMsg(BACKWARD + " " + Integer.toString(arg));
+				} 
+				else if (resInput == 3) {
+					arg = robotoServer.degreeInput();
+					robotoServer.sendMsg(TURN_RIGHT + " " + Integer.toString(arg));
+				} 
+				else if (resInput == 4) {
+					arg = robotoServer.degreeInput();
+					robotoServer.sendMsg(TURN_LEFT + " " + Integer.toString(arg));
+				} 
+				else if (resInput == 5) {
+					robotoServer.sendMsg(DISTANCE);
+					robotoServer.message += " nearest object is " + 
+						Integer.toString(robotoServer.result) + " cm away.";
+				} else if (resInput == 6) {
+					robotoServer.sendMsg(TEMPERATURE);
+					robotoServer.message += " ambient temperature is " + 
+						Integer.toString(robotoServer.result) + "degrees C";
+				} 
+				else {// quit - input = 7
+					break;
+				}
+
+				System.out.println(robotoServer.message);
+				robotoServer.message = "";
+				arg = -1;
+				robotoServer.result = -1;
+			}
+		
+			robotoServer.stopConnection();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}     	
+	}
 }
