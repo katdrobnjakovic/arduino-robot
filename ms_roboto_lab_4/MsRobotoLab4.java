@@ -292,7 +292,7 @@ class MsRobotoLab4
 			result = Integer.parseInt(resp.split(" ")[1]);
 		} else { //error
 			message = "Error - ";
-			message += resp.split(" ")[1];
+			message += resp;
 		}
 	}
 

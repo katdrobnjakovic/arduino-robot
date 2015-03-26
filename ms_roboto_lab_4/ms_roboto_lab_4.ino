@@ -97,7 +97,7 @@ WIFI_PROFILE wireless_prof = {
           /* Gateway IP */ "10.136.160.1" };
 
 //TODO PUT IN COMPUTER IP
-String remote_server = "137.122.45.79"; // peer device IP address
+String remote_server = "137.122.45.88"; // peer device IP address
 
 String remote_port = "32114"; // arbitrary port
 
@@ -146,6 +146,7 @@ void setup() {
   
     if(client.connect()) {
       Serial.println("Connected to Ms. Roboto"); //Send this to computer
+      client.println("Confirm connection");
     } else {
       Serial.println("FAILED");
     }
