@@ -97,7 +97,7 @@ class MsRobotoLab4
 *
 *
 *************************************************************************/ 
-  void startConnection(int port) throws IOException 
+public void startConnection(int port) throws IOException 
   {
 		System.out.println("Starting server..");
 		servSock = new DatagramSocket(port);
@@ -239,7 +239,7 @@ public void send(String msg) throws IOException {
 *
 *
 *************************************************************************/ 
-	String getRobotoReply(String resp) 
+public void getRobotoReply(String resp) 
 	{
 		String cmd = resp.substring(0, 1);
 		if(cmd.equals(ROBOTO_SIMPLE_REPLY)) {
@@ -277,7 +277,7 @@ public void send(String msg) throws IOException {
 		send(msg);
 		System.out.println("Waiting for Ms Roboto to reply");
 		String response = receive();
-		getRobotoReply();
+		getRobotoReply(response);
 	}
 
 /************************************************************************
@@ -309,38 +309,44 @@ public void send(String msg) throws IOException {
 				MsRobotoLab4 robotoServer = new MsRobotoLab4();
 				robotoServer.startConnection(PORT);
 				robotoServer.br = new BufferedReader(new InputStreamReader(System.in));
+				int arg = -1;
 
 				while (true) {
 					displayInstructions();
 					int resInput = Integer.parseInt(robotoServer.br.readLine());
 					if (resInput == 1) {
-						distance = robotoServer.distanceInput();
-						robotoServer.sendMsg(FORWARD + " " +  Integer.toString(distance));
+						arg = robotoServer.distanceInput();
+						robotoServer.sendMsg(FORWARD + " " +  Integer.toString(arg));
 					}
 					else if (resInput == 2) {
-						distance = robotoServer.distanceInput();
-						robotoServer.sendMsg(BACKWARD + " " + Integer.toString(distance));
+						arg = robotoServer.distanceInput();
+						robotoServer.sendMsg(BACKWARD + " " + Integer.toString(arg));
 					} 
 					else if (resInput == 3) {
-						degrees = robotoServer.degreeInput();
-						robotoServer.sendMsg(TURN_RIGHT + " " + Integer.toString(degrees));
+						arg = robotoServer.degreeInput();
+						robotoServer.sendMsg(TURN_RIGHT + " " + Integer.toString(arg));
 					} 
 					else if (resInput == 4) {
-						degrees = robotoServer.degreeInput();
-						robotoServer.sendMsg(TURN_LEFT + " " + Integer.toString(degrees));
+						arg = robotoServer.degreeInput();
+						robotoServer.sendMsg(TURN_LEFT + " " + Integer.toString(arg));
 					} 
 					else if (resInput == 5) {
 						robotoServer.sendMsg(DISTANCE);
-						message += " nearest object is " + result.toString() + " cm away.";
+						robotoServer.message += " nearest object is " + 
+							Integer.toString(robotoServer.result) + " cm away.";
 					} else if (resInput == 6) {
 						robotoServer.sendMsg(TEMPERATURE);
-						message += " ambient temperature is " + result.toString() + "degrees C";
+						robotoServer.message += " ambient temperature is " + 
+							Integer.toString(robotoServer.result) + "degrees C";
 					} 
 					else {// quit - input = 7
 						break;
 					}
 
-					System.out.println(message);
+					System.out.println(robotoServer.message);
+					robotoServer.message = "";
+					arg = -1;
+					robotoServer.result = -1;
 				}
 			
 				robotoServer.stopConnection();
