@@ -97,7 +97,7 @@ class MsRobotoLab4
     {
 		System.out.println("Starting server..");
 		servSock = new ServerSocket(port);
-		System.out.println("Server is connected on port: " + port);
+		System.out.println("Server is listening on port: " + port);
 		System.out.println("Waiting for Ms Roboto..");
 		sock = servSock.accept(); 
 		System.out.println("Ms Roboto has connected");
