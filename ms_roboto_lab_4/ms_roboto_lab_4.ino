@@ -144,8 +144,7 @@ void setup() {
     Wireless.begin(&wireless_prof);
   
     if(client.connect()) {
-      Serial.println("connected");
-      client.println("Hello from Ms. Roboto"); //Send this to computer
+      Serial.println("Connected to Ms. Roboto"); //Send this to computer
     } else {
       Serial.println("FAILED");
     }
@@ -193,6 +192,7 @@ void loop() {
       command = runCommand(command);
       sendResponse(command);
       inputToParse = false;
+      client.flush();
     }
   }
 
