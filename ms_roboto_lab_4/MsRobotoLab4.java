@@ -158,7 +158,7 @@ public void send(String msg) throws IOException {
 *
 * Description
 * *************
-* Reads the inputed distance for forward and backwards traversal from the buffer.
+* Reads the inputted distance for forward and backwards traversal from the buffer.
 *
 * Parameters
 * *************
@@ -191,7 +191,7 @@ public void send(String msg) throws IOException {
 *
 * Description
 * *************
-* Reads the inputed degree for clockwise and counter clockwise rotation from the buffer.
+* Reads the inputted degree for clockwise and counter clockwise rotation from the buffer.
 *
 * Parameters
 * *************
@@ -224,7 +224,7 @@ public void send(String msg) throws IOException {
 *
 * Description
 * *************
-* Gets the message to Ms Roboto
+* Gets the message from Ms Roboto
 *
 * Parameters
 * *************
