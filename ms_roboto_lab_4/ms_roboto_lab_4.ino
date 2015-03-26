@@ -91,12 +91,12 @@ int tempurature_reg = 0x01;
 WIFI_PROFILE wireless_prof = {
                 /* SSID */ "Robolab",
  /* WPA/WPA2 passphrase */ "w1r3l3ss!",
-    /* Robot IP address */ "XX.XXX.XXX.XX",
+    /* Robot IP address */ "192.168.150.16",
          /* subnet mask */ "255.255.255.0",
-          /* Gateway IP */ "10.136.160.1", };
+          /* Gateway IP */ "192.168.150.1" };
 
 //TODO PUT IN COMPUTER IP
-String remote_server = "YYY.YYY.YYY.YYY"; // peer device IP address
+String remote_server = "192.168.150.105"; // peer device IP address
 
 String remote_port = "32114"; // arbitrary port
 
@@ -147,7 +147,7 @@ void setup() {
       Serial.println("connected");
       client.println("Hello from Ms. Roboto"); //Send this to computer
     } else {
-      Serial.println("failed");
+      Serial.println("FAILED");
     }
   } else {
     Serial.println("Done setup");
