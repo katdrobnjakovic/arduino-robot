@@ -26,7 +26,7 @@
 //DEBUG MODE FLAG
 #define SERIAL_DEBUG false // If true, only parse commands
 #define SERIAL_COMMAND false // If true, does not wireless stuff
-#define WIRELESS_DEBUG true
+#define WIRELESS_DEBUG true // If true, does wireless communication without robot execution
 
 // MOTOR CONSTANTS
 #define LEFT_MOTOR 45
@@ -189,7 +189,12 @@ void loop() {
     
     if(inputToParse) {
       message[index] = '\0';
-  
+      
+      if(WIRELESS_DEBUG) {
+        Serial.print("Message received from server: ");
+        Serial.println(message);
+      }
+      
       struct Command command = parseCommandString(message);
       command = runCommand(command);
       sendResponse(command);
@@ -379,6 +384,12 @@ struct Command setError(struct Command command, char* message) {
 *************************************************************************/ 
 void sendResponse(struct Command command) {
   char* response = buildResponse(command);
+  
+  if(WIRELESS_DEBUG) {
+    Serial.print("Response sent to server: ");
+    Serial.println(response); 
+  }
+  
   client.println(response);
 }
 

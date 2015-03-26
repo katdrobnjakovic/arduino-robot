@@ -100,6 +100,7 @@ class MsRobotoLab4
 	public void startConnection(int port) throws IOException {
 		System.out.println("Starting server..");
 		servSock = new DatagramSocket(port);
+		servSock.connect(InetAddress.getByName(ROBOT_IP), port);
 		System.out.println("Server is listening on port: " + port);
 		System.out.println("Waiting for Ms Roboto..");
 		System.out.println(receive());
@@ -157,12 +158,7 @@ class MsRobotoLab4
 	public void send(String msg) throws IOException {
 		byte[] data = new byte[1024]; 
 		data = msg.getBytes();
-		DatagramPacket sendPacket = new DatagramPacket(
-			data, 
-			data.length, 
-			InetAddress.getByName(ROBOT_IP), 
-			PORT
-		);
+		DatagramPacket sendPacket = new DatagramPacket(data, data.length);
 		servSock.send(sendPacket);
 	}
 
@@ -358,7 +354,13 @@ class MsRobotoLab4
 
 			while (true) {
 				robotoServer.displayInstructions();
-				int resInput = Integer.parseInt(robotoServer.br.readLine());
+				int resInput; 
+				try {
+					resInput = Integer.parseInt(robotoServer.br.readLine());
+				} catch (NumberFormatException e) {
+					System.out.println("Please enter a number from 1 to 7");
+					continue;
+				}
 				if (resInput == 1) {
 					arg = robotoServer.distanceInput();
 					robotoServer.sendMsg(FORWARD + " " +  Integer.toString(arg));
@@ -383,9 +385,10 @@ class MsRobotoLab4
 					robotoServer.sendMsg(TEMPERATURE);
 					robotoServer.message += " ambient temperature is " + 
 						Integer.toString(robotoServer.result) + "degrees C";
-				} 
-				else {// quit - input = 7
+				} else if (resInput == 7) {// quit - input = 7
 					break;
+				} else {
+					continue;
 				}
 
 				System.out.println(robotoServer.message);
