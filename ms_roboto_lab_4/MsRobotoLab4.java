@@ -131,7 +131,7 @@ class MsRobotoLab4
 		byte[] data = new byte[1024];
 		DatagramPacket receivePacket = new DatagramPacket(data, data.length);
 		servSock.receive(receivePacket);
-		return receivePacket.getData().toString();
+		return new String(receivePacket.getData());
 	}
 
 	/************************************************************************
@@ -284,6 +284,7 @@ class MsRobotoLab4
 	*
 	*************************************************************************/ 
 	public void parseRobotoReply(String resp) {
+		System.out.println("Raw response: " + resp);
 		String cmd = resp.substring(0, 1);
 		if(cmd.equals(ROBOTO_SIMPLE_REPLY)) {
 			message = "Success - command done";
@@ -292,7 +293,7 @@ class MsRobotoLab4
 			result = Integer.parseInt(resp.split(" ")[1]);
 		} else { //error
 			message = "Error - ";
-			message += resp;
+			message += resp.split(" ")[1];
 		}
 	}
 
