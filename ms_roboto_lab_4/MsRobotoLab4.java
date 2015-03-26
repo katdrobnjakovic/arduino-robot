@@ -68,14 +68,14 @@ class MsRobotoLab4
 *************************************************************************/ 
     static void displayInstructions()
     {
-    	System.out.println("Enter the correct number to select an operation:");
-        System.out.println("1 – Move the robot forward.");
-        System.out.println("2 – Move the robot backward.");
-        System.out.println("3 – Rotate the robot clockwise.");
-        System.out.println("4 – Rotate the robot counter clockwise.");
-        System.out.println("5 – Read the distance to the nearest object.");
-        System.out.println("6 – Read temperature values.");
-        System.out.println("7 – Quit.");
+    	System.out.println("\n\nEnter the correct number to select an operation:");
+      System.out.println("\t1 - Move the robot forward.");
+      System.out.println("\t2 - Move the robot backward.");
+      System.out.println("\t3 - Rotate the robot clockwise.");
+      System.out.println("\t4 - Rotate the robot counter clockwise.");
+      System.out.println("\t5 - Read the distance to the nearest object.");
+      System.out.println("\t6 - Read temperature values.");
+      System.out.println("\t7 - Quit.");
     }
 /************************************************************************
 *
@@ -249,7 +249,7 @@ public void getRobotoReply(String resp)
 			result = Integer.parseInt(resp.split(" ")[1]);
 		} else { //error
 			message = "Error - ";
-			message += resp.split(" ");
+			message += resp.split(" ")[1];
 		}
 	}
 /************************************************************************
