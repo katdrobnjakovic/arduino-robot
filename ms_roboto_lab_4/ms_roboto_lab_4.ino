@@ -26,7 +26,7 @@
 //DEBUG MODE FLAG
 #define SERIAL_DEBUG false // If true, only parse commands
 #define SERIAL_COMMAND false // If true, does not wireless stuff
-#define WIRELESS_DEBUG true // If true, does wireless communication without robot execution
+#define WIRELESS_DEBUG false // If true, does wireless communication without robot execution
 
 // MOTOR CONSTANTS
 #define LEFT_MOTOR 45
@@ -94,7 +94,7 @@ WIFI_PROFILE wireless_prof = {
  /* WPA/WPA2 passphrase */ "w1r3l3ss!",
     /* Robot IP address */ "10.136.160.16",
          /* subnet mask */ "255.255.255.0",
-          /* Gateway IP */ "10.136.160.1" };
+          /* Gateway IP */ "10.136.160.1", };
 
 //TODO PUT IN COMPUTER IP
 String remote_server = "137.122.45.88"; // peer device IP address
@@ -146,7 +146,7 @@ void setup() {
   
     if(client.connect()) {
       Serial.println("Connected to Ms. Roboto"); //Send this to computer
-      client.println("Confirm connection");
+      client.print("Confirm connection");
     } else {
       Serial.println("FAILED");
     }
@@ -179,9 +179,8 @@ void loop() {
     }
   } else {
     while(client.available()) {
-      message[0] = '\0'; 
       char in = (char)client.read();
-
+  
       message[index++] = in;
       inputToParse = true;
       delay(1);
@@ -190,16 +189,13 @@ void loop() {
     if(inputToParse) {
       message[index] = '\0';
       
-      if(WIRELESS_DEBUG) {
-        Serial.print("Message received from server: ");
-        Serial.println(message);
-      }
+      Serial.print("Message received from server: ");
+      Serial.println(message);
       
       struct Command command = parseCommandString(message);
       command = runCommand(command);
       sendResponse(command);
-      inputToParse = false;
-      client.flush();
+      memset(message, 0, sizeof(message));
     }
   }
 
@@ -289,7 +285,7 @@ struct Command parseCommandString(char* message) {
 *
 *************************************************************************/ 
 struct Command runCommand(struct Command command) {
-  char message[1024];
+  char message[100];
 
   if(!command.allGood) {
     if (!WIRELESS_DEBUG) {
@@ -303,19 +299,19 @@ struct Command runCommand(struct Command command) {
 
   if(command.cmd == 'f') {
     moveCMForward(command.integerParam);
-    message[0] = '\0';
+    memset(message, 0, sizeof(message));
     command.cmd = 'd';
   } else if(command.cmd == 'b') {
     moveCMBackwards(command.integerParam);
-    message[0] = '\0';
+    memset(message, 0, sizeof(message));
     command.cmd = 'd';
   } else if(command.cmd == 'r') {
     turnDegreesRight(command.integerParam);
-    message[0] = '\0';
+    memset(message, 0, sizeof(message));
     command.cmd = 'd';
   } else if(command.cmd == 'l') {
     turnDegreesLeft(command.integerParam);
-    message[0] = '\0';
+    memset(message, 0, sizeof(message));
     command.cmd = 'd';
   } else if(command.cmd == 'p') {
     strcpy(message, readDistance());
@@ -390,7 +386,7 @@ void sendResponse(struct Command command) {
     Serial.println(response); 
   }
   
-  client.println(response);
+  client.print(response);
 }
 
 /************************************************************************
