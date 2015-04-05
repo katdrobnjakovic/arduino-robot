@@ -1,4 +1,5 @@
 import constants
+import datetime
 
 def log(message):
   """
@@ -15,10 +16,11 @@ def log(message):
     _remote_log(message)
 
 def _local_log(message):
-  pass
+  print(message)
 
 def _remote_log(message):
   pass
 
 def _append_timestamp(message):
-  pass
+  st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+  return st + ": " + message 
