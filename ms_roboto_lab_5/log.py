@@ -2,6 +2,8 @@ import constants
 import time
 import datetime
 
+remote_backlog = []
+
 def log(message):
   """
   This is here to allow simple logging on both the local server and the
@@ -16,11 +18,16 @@ def log(message):
   if constants.LOGGING['remote_log']:
     _remote_log(message)
 
+def retreive_remote_log():
+  temp_log = [msg for msg in remote_backlog]
+  remote_backlog = []
+  return temp_log
+
 def _local_log(message):
   print(message)
 
 def _remote_log(message):
-  pass
+  remote_backlog.append(message)
 
 def _append_timestamp(message):
   st = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
