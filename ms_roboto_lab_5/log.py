@@ -1,4 +1,5 @@
 import constants
+import time
 import datetime
 
 def log(message):
@@ -22,5 +23,5 @@ def _remote_log(message):
   pass
 
 def _append_timestamp(message):
-  st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+  st = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
   return st + ": " + message 
