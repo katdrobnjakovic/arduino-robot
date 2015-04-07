@@ -67,11 +67,11 @@ class RobotController:
     if response_flag == constants.CMD_CHARS['success']:
       log.log("Successfully executed movement command")
       return (true, None)
-    else if response_flag == constants.CMD_CHARS['result']:
+    elif response_flag == constants.CMD_CHARS['result']:
       log.log("Successfully executed data retrieval command. Result: " 
         + response.split(" ")[1])
       return (true, response.split(" ")[1])
-    else if response_flag == constants.CMD_CHARS['error']:
+    elif response_flag == constants.CMD_CHARS['error']:
       log.log("Error executing command: " + response.split(" ")[1])
       return (false, response.split(" ")[1])
     else:
