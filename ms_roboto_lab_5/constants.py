@@ -11,15 +11,15 @@ CMD_CHARS = {
 }
 
 ROBOT_COMM = {
-  'ip': 'TODO',
-  'port': '32114',
+  'ip': '0.0.0.0',
+  'port': 32114,
   # Length of time (in seconds) the UDP communication will wait
-  'timeout': 10.0,
+  'timeout': 5,
   'buffer_size': 1024
 }
 
 LOGGING = {
   'local_log': True,
-  'remote_log': False
+  'remote_log': False,
   'timestamps_enabled': True
 }

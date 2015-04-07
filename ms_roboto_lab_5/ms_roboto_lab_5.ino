@@ -233,6 +233,10 @@ struct Command parseCommandString(char* message) {
   command.cmd = message[0];
   command.allGood = true;
 
+  if(strlen(message) == 1) {
+    return command;
+  }
+
   int index = 0;
   char param[8];
 
