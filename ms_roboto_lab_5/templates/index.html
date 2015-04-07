@@ -5,46 +5,63 @@
 	<title>Ms. Roboto</title>	
 	<!-- Import custom style sheet -->
 	<link rel="stylesheet" type="text/css" href="static/roboto_style.css">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	
 </head>
 <body>
 	<h1>Hello Ms. Roboto!</h1>
 
 	<div class="fbBtn">
-		<button id="forwardBtn" onclick="move_forward()" value="forward">Forward</button>
+		<button id="forwardBtn" value="forward">Forward</button>
 	</div>
 	<div class="rlBtn">
-			<button id="leftBtn" onclick="turn_left()" value="forward">Left</button>
-			<button id="rightBtn" onclick="turn_right()" value="forward">Right</button>
+			<button id="leftBtn" value="left">Left</button>
+			<button id="rightBtn" value="right">Right</button>
 	</div>
 	<div class="fbBtn">
-		<button id="backBtn" onclick="move_backwards()" value="forward">Backward</button>
+		<button id="backBtn" value="backward">Backward</button>
 	</div><br>
 	<div>
-		<button id="distanceBtn">Distance</button>
-		<button id="tempBtn">Temperature</button>
+		<button id="distanceBtn" value="distance">Distance</button>
+		<button id="tempBtn" value="temperature">Temperature</button>
 	</div>
 </body>
 
 <script>
-$('#id').click(function(){
-
- $.ajax({
+function handle(command) {
+	$.ajax({
       type:'get',
-      url:<YOUR SERVERSIDE PAGE URL>,
+      url:command,
       cache:false,
-      data:<if any arguments>,
       async:asynchronous,
       dataType:json, //if you want json
       success: function(data) {
-        <put your custom validation here using the response from data structure >
+        console.log("success");
+    },
+      error: function(data) {
+        console.log("err");
     }
-      error:functionfunction(data) {
-        <put your custom code here to handle the call failure>
-    }
-   }
- );
-});
+    });
+}
+
+$("#forwardBtn").on("click", function(){handle("forward");}); 
+
+
+function move_backwards() {
+	handle("backward");
+}
+function turn_left() {
+	handle("left");
+}
+function turn_right() {
+	handle("right");
+}
+function get_distance() {
+	handle("distance");
+}
+function get_temperature() {
+	handle("temperature");
+}
 </script>
 
 </html>
