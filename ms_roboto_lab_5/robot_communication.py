@@ -70,17 +70,17 @@ class RobotController:
     
     if response_flag == constants.CMD_CHARS['success']:
       log.log("Successfully executed movement command")
-      return (true, None)
+      return (True, None)
     elif response_flag == constants.CMD_CHARS['result']:
       log.log("Successfully executed data retrieval command. Result: " 
         + response.split(" ")[1])
-      return (true, response.split(" ")[1])
+      return (True, response.split(" ")[1])
     elif response_flag == constants.CMD_CHARS['error']:
       log.log("Error executing command: " + response.split(" ")[1])
-      return (false, response.split(" ")[1])
+      return (False, response.split(" ")[1])
     else:
       log.log("Unknown response: " + response)
-      return (false, None)
+      return (False, None)
 
 class UDPCommunicator:
   """
@@ -111,7 +111,7 @@ class UDPCommunicator:
   def send(self, message):
     self._ensure_connected()
     self._send_to_peer(message)
-    
+
   def receive(self):
     msg = self._receive_from_peer()
     return msg[0] #msg is a tuple of (data, addr)
