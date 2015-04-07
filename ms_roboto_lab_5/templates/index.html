@@ -11,18 +11,40 @@
 	<h1>Hello Ms. Roboto!</h1>
 
 	<div class="fbBtn">
-		<button id="forwardBtn">Forward</button>
+		<button id="forwardBtn" onclick="move_forward()" value="forward">Forward</button>
 	</div>
 	<div class="rlBtn">
-			<button id="leftBtn">Left</button>
-			<button id="rightBtn">Right</button>
+			<button id="leftBtn" onclick="turn_left()" value="forward">Left</button>
+			<button id="rightBtn" onclick="turn_right()" value="forward">Right</button>
 	</div>
 	<div class="fbBtn">
-		<button id="backBtn">Backward</button>
+		<button id="backBtn" onclick="move_backwards()" value="forward">Backward</button>
 	</div><br>
 	<div>
 		<button id="distanceBtn">Distance</button>
-		<button id="tempBtn">Temp</button>
+		<button id="tempBtn">Temperature</button>
 	</div>
 </body>
+
+<script>
+$('#id').click(function(){
+
+ $.ajax({
+      type:'get',
+      url:<YOUR SERVERSIDE PAGE URL>,
+      cache:false,
+      data:<if any arguments>,
+      async:asynchronous,
+      dataType:json, //if you want json
+      success: function(data) {
+        <put your custom validation here using the response from data structure >
+    }
+      error:functionfunction(data) {
+        <put your custom code here to handle the call failure>
+    }
+   }
+ );
+});
+</script>
+
 </html>
