@@ -21,5 +21,5 @@ ROBOT_COMM = {
 LOGGING = {
   'local_log': True,
   'remote_log': False
-  'timestamp_enabled': True
+  'timestamps_enabled': True
 }
