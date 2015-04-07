@@ -26,37 +26,37 @@ class RobotController:
     log.log("Telling robot to move forward")
     command = constants.CMD_CHARS['forward'] + " " + str(amount)
     self._send_command(command)
-    _receive_response()
+    self._receive_response()
 
   def move_backwards(self, amount):
     log.log("Telling robot to move backwards")
     command = constants.CMD_CHARS['backwards'] + " " + str(amount)
     self._send_command(command)
-    _receive_response()
+    self._receive_response()
 
   def turn_right(self, amount):
     log.log("Telling robot to turn right")
     command = constants.CMD_CHARS['right'] + " " + str(amount)
     self._send_command(command)
-    _receive_response()
+    self._receive_response()
 
   def turn_left(self, amount):
     log.log("Telling robot to turn left")
     command = constants.CMD_CHARS['left'] + " " + str(amount)
     self._send_command(command)
-    _receive_response()
+    self._receive_response()
 
   def read_distance(self, amount):
     log.log("Telling robot to measure distance")
     command = constants.CMD_CHARS['distance']
     self._send_command(command)
-    _receive_response()
+    self._receive_response()
 
   def read_temperature(self, amount):
     log.log("Telling robot to measure temperature")
     command = constants.CMD_CHARS['temperature']
     self._send_command(command)
-    _receive_response()
+    self._receive_response()
 
   def _send_command(self, cmd):
     log.log("Sending to robot: " + cmd)
@@ -64,7 +64,7 @@ class RobotController:
     log.log("Successfully sent message to robot")
 
   def _receive_response(self):
-    log.log("Retreiving response")
+    log.log("Receiving response")
     response = self._communicator.receive()
     response_flag = response.split(" ")[0]
     
