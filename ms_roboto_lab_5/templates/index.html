@@ -31,16 +31,7 @@
 function handle(command) {
 	$.ajax({
       type:'get',
-      url:command,
-      cache:false,
-      async:asynchronous,
-      dataType:json, //if you want json
-      success: function(data) {
-        console.log("success");
-    },
-      error: function(data) {
-        console.log("err");
-    }
+      url:command
     });
 }
 

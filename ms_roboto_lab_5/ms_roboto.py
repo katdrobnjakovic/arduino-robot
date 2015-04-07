@@ -11,7 +11,9 @@ def index():
 
 @app.route('/forward')
 def forward():
-    print url_for('forward')
+
+    print 'moving forwarddddd'
+    return 'Moving forward!' 
 
 @app.route('/backward')
 def backward():
@@ -31,7 +33,7 @@ def distance():
 
 @app.route('/temperature')
 def temperature():
-    print url_for('temperature')
+    print url_for('forward')
 
 if __name__ == '__main__':
     app.debug = True
