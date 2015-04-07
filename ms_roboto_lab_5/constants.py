@@ -14,7 +14,7 @@ ROBOT_COMM = {
   'ip': '0.0.0.0',
   'port': 32114,
   # Length of time (in seconds) the UDP communication will wait
-  'timeout': 20,
+  'timeout': 5,
   'buffer_size': 1024
 }
 

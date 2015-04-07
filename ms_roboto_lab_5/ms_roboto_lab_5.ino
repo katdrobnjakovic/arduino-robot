@@ -97,7 +97,7 @@ WIFI_PROFILE wireless_prof = {
           /* Gateway IP */ "10.136.160.1", };
 
 //TODO PUT IN COMPUTER IP
-String remote_server = "137.122.45.88"; // peer device IP address
+String remote_server = "137.122.47.224"; // peer device IP address
 
 String remote_port = "32114"; // arbitrary port
 
@@ -232,6 +232,10 @@ struct Command parseCommandString(char* message) {
   struct Command command;
   command.cmd = message[0];
   command.allGood = true;
+
+  if(strlen(message) == 1) {
+    return command;
+  }
 
   int index = 0;
   char param[8];

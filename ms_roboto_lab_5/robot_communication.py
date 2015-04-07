@@ -25,40 +25,56 @@ class RobotController:
   def move_forward(self, amount):
     log.log("Telling robot to move forward")
     command = constants.CMD_CHARS['forward'] + " " + str(amount)
-    self._send_command(command)
-    self._receive_response()
+    self._send_once(command)
 
   def move_backwards(self, amount):
     log.log("Telling robot to move backwards")
     command = constants.CMD_CHARS['backwards'] + " " + str(amount)
-    self._send_command(command)
-    self._receive_response()
+    self._send_once(command)
 
   def turn_right(self, amount):
     log.log("Telling robot to turn right")
     command = constants.CMD_CHARS['right'] + " " + str(amount)
-    self._send_command(command)
-    self._receive_response()
+    self._send_once(command)
 
   def turn_left(self, amount):
     log.log("Telling robot to turn left")
     command = constants.CMD_CHARS['left'] + " " + str(amount)
-    self._send_command(command)
-    self._receive_response()
+    self._send_once(command)
 
-  def read_distance(self, amount):
+  def read_distance(self):
     log.log("Telling robot to measure distance")
-    command = constants.CMD_CHARS['distance']
-    self._send_command(command)
-    self._receive_response()
+    command = constants.CMD_CHARS['distance'] + ""
+    self._send_until_successful(command)
 
-  def read_temperature(self, amount):
+  def read_temperature(self):
     log.log("Telling robot to measure temperature")
     command = constants.CMD_CHARS['temperature']
-    self._send_command(command)
-    self._receive_response()
+    self._send_until_successful(command)
 
-  def _send_command(self, cmd):
+  def _send_until_successful(self, cmd):
+    self._communicator.set_timeout(1);
+    successful = False
+    
+    while not successful:
+      try:
+        self._send_command(command)
+        self._receive_response()
+        successful = True
+      except socket.timeout:
+        pass
+
+  def _send_once(self, command):
+    self._communicator.set_timeout(constants.ROBOT_COMM['timeout'])
+
+    try:
+      self._send_command(command)
+      self._receive_response()
+    except socket.timeout:
+      log.log("Timeout sending command or receiving response. " 
+        + "Please try again.")
+
+  def _send_command(self, command):
     log.log("Sending to robot: " + cmd)
     self._communicator.send(cmd)
     log.log("Successfully sent message to robot")
@@ -97,7 +113,7 @@ class UDPCommunicator:
 
     self._socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     self._socket.bind((self._ip, self._port))
-    self._set_timeout()
+    self.set_timeout()
     try:
       data, addr = self._receive_from_peer()
     except socket.timeout as e:
@@ -116,6 +132,12 @@ class UDPCommunicator:
     msg = self._receive_from_peer()
     return msg[0] #msg is a tuple of (data, addr)
 
+  def set_timeout(self, timeout = -1):
+    if timeout != -1:
+      self._socket.settimeout(timeout)
+    else:
+      self._socket.settimeout(constants.ROBOT_COMM['timeout'])
+
   def _ensure_connected(self):
     if not self.connected:
       raise ValueError("Communicator is not yet connected")
@@ -125,9 +147,3 @@ class UDPCommunicator:
 
   def _receive_from_peer(self):
     return self._socket.recvfrom(constants.ROBOT_COMM['buffer_size'])
-
-  def _set_timeout(self, timeout = -1):
-    if timeout != -1:
-      self._socket.settimeout(timeout)
-    else:
-      self._socket.settimeout(constants.ROBOT_COMM['timeout'])
