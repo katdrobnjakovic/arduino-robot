@@ -52,7 +52,7 @@ class RobotController:
     command = constants.CMD_CHARS['temperature']
     self._send_until_successful(command)
 
-  def _send_until_successful(self, cmd):
+  def _send_until_successful(self, command):
     self._communicator.set_timeout(1);
     successful = False
     
