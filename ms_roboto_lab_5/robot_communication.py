@@ -115,6 +115,10 @@ class UDPCommunicator:
     data, addr = self._receive_from_peer()
     return data
 
+  def receive(self):
+    msg = self._receive_from_peer()
+    return msg[0] #msg is a tuple of (data, addr)
+
   def _ensure_connected(self):
     if not self.connected:
       raise ValueError("Communicator is not yet connected")
