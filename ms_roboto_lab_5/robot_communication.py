@@ -111,10 +111,7 @@ class UDPCommunicator:
   def send(self, message):
     self._ensure_connected()
     self._send_to_peer(message)
-    self._ensure_connected()
-    data, addr = self._receive_from_peer()
-    return data
-
+    
   def receive(self):
     msg = self._receive_from_peer()
     return msg[0] #msg is a tuple of (data, addr)
