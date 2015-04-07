@@ -75,8 +75,8 @@ class RobotController:
         + "Please try again.")
 
   def _send_command(self, command):
-    log.log("Sending to robot: " + cmd)
-    self._communicator.send(cmd)
+    log.log("Sending to robot: " + command)
+    self._communicator.send(command)
     log.log("Successfully sent message to robot")
 
   def _receive_response(self):
