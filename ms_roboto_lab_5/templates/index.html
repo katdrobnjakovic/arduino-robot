@@ -26,7 +26,8 @@
 		<button id="tempBtn" value="temperature">Temperature</button>
 	</div>
 	<div>
-		Log
+		Log<br>
+		<textarea id="logOutput"></textarea>
 	</div>
 </body>
 
@@ -56,6 +57,19 @@ function get_distance() {
 function get_temperature() {
 	handle("temperature");
 }
+
+function printLog() {
+	$.ajax ({
+		type:'get',
+		url:'printlog',
+		success: function(data) {
+			if (typeof data !== 'undefined') {	
+				console.log(data);
+			}
+		}
+	});
+}
+window.setInterval(printLog, 100);
 </script>
 
 </html>

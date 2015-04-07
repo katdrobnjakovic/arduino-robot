@@ -2,19 +2,19 @@ import sys
 sys.path.append("/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages")
 from flask import Flask, render_template, url_for
 from robot_communication import RobotController
+from log import retreive_single_log
 
 app = Flask(__name__)
 
-
+robotComm = RobotController()
 @app.route('/')
 def index():
-    robotComm = RobotController()
     return render_template('index.html')
 
 @app.route('/forward')
 def forward():
     print 'moving forwarddddd'
-    return 'Moving forward!' 
+    return robotComm.move_forward(10) 
 
 @app.route('/backward')
 def backward():
@@ -40,6 +40,16 @@ def distance():
 def temperature():
     print 'Getting temperature'
     return 'Getting temperature!'
+
+@app.route('/printlog')
+def printlog():
+    #retreive_remote_log()
+    plog = retreive_single_log()  
+    if plog is None:
+        return ("", 204)
+    else: 
+        print 'Here is the logggggg'
+        return retreive_single_log()  
 
 if __name__ == '__main__':
     app.debug = True

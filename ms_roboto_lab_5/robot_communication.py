@@ -10,10 +10,12 @@ class RobotController:
   def __init__(self):
     self._communicator = UDPCommunicator(constants.ROBOT_COMM['ip'],
                                          constants.ROBOT_COMM['port'])
+    
     while not self._communicator.connected:
       try:
         log.log("Connecting to peer")
-        connection_response = self._communicator.connect()
+        connection_response = log.log("Error connecting to robot") #self._communicator.connect()
+        self._communicator.connected = True      
       except socket.timeout:
         log.log("Timed out waiting to connect to the robot. Retrying")
 
