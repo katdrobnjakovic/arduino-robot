@@ -96,7 +96,6 @@ def create_app():
 
     @app.route('/printlog')
     def print_log():
-        #retreive_remote_log()
         plog = retreive_single_log()  
         if plog is None:
             return ("", 204)
