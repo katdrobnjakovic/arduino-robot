@@ -1,7 +1,9 @@
 import constants
 import time
 import datetime
+import threading
 
+log_lock = threading.Lock()
 remote_backlog = []
 
 def log(message):
@@ -20,20 +22,18 @@ def log(message):
 
 def retreive_single_log():
   try:
-   return remote_backlog.pop(0)
+    with log_lock:
+      single_log = remote_backlog.pop(0)
+    return single_log
   except IndexError:
     return None
-
-def retreive_remote_log():
-  temp_log = [msg for msg in remote_backlog]
-  remote_backlog = []
-  return temp_log
 
 def _local_log(message):
   print(message)
 
 def _remote_log(message):
-  remote_backlog.append(message)
+  with log_lock:
+    remote_backlog.append(message)
 
 def _append_timestamp(message):
   st = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')

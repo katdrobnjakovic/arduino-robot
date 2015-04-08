@@ -38,13 +38,8 @@ function handle(command) {
       url:command,
       success: function(data) {
       	console.log(data);
-      	testLog(data);
       }
     });
-}
-
-function testLog(data) {
-	$('#logOutput').after("<div class='log-entry'>" + data + "</div>");
 }
 
 $("#forwardBtn").on("click", function(){handle("forward");}); 
@@ -61,12 +56,12 @@ function printLog() {
 		success: function(data) {
 			if (typeof data !== 'undefined') {	
 				console.log(data);
-				$('#logOutput').text(data);
+				$('#logOutput').after("<div class='log-entry'>" + data + "</div>");
 			}
 		}
 	});
 }
-window.setInterval(printLog, 100);
+window.setInterval(printLog, 1000);
 </script>
 
 </html>

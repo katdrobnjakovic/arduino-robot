@@ -1,56 +1,112 @@
-import sys
+import sys, multiprocessing, threading
+import atexit
 sys.path.append("/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages")
 from flask import Flask, render_template, url_for
 from robot_communication import RobotController
 from log import retreive_single_log
 
-app = Flask(__name__)
 
-#robotComm = RobotController()
-@app.route('/')
-def index():
-    return render_template('index.html')
+app = None
 
-@app.route('/forward')
-def forward():
-    print 'moving forwarddddd'
-    return 'MOVING FORWARD' #robotComm.move_forward(10) 
+POOL_TIME = 5 #Seconds
 
-@app.route('/backward')
-def backward():
-    print 'moving backwardddddd'
-    return 'MOVING BACKWARD' #robotComm.move_backwards(10)
+# variables that are accessible from anywhere
+commonDataStruct = []
+# lock to control access to variable
+dataLock = threading.Lock()
+# thread handler
+yourThread = threading.Thread()
 
-@app.route('/left')
-def left():
-    print 'turning leftttttt'
-    return 'turning leftttttt'#robotComm.turn_right(45)
+def create_app():
+    global app 
+    app = Flask(__name__)
 
-@app.route('/right')
-def right():
-    print 'turning righttttt'
-    return robotComm.turn_left(45)
+    def interrupt():
+        global yourThread
+        yourThread.cancel()
 
-@app.route('/distance')
-def distance():
-    print 'Getting distance'
-    return robotComm.read_distance()
+    def doStuff():
+        global commonDataStruct
+        global yourThread
+        robotComm = RobotController()
+        with dataLock:
+            # Do your stuff with commonDataStruct Here
+            while True:
+                if commonDataStruct:
+                    command = commonDataStruct.pop()
+                    if command[1] is None:
+                        getattr(robotComm, command[0])()
+                    else:
+                        getattr(robotComm, command[0])(command[1])
 
-@app.route('/temperature')
-def temperature():
-    print 'Getting temperature'
-    return robotComm.read_temperature()
+    def doStuffStart():
+        # Do initialisation stuff here
+        global yourThread
+        # Create your thread
+        yourThread = threading.Timer(POOL_TIME, doStuff, ())
+        yourThread.start()
 
-@app.route('/printlog')
-def printlog():
-    #retreive_remote_log()
-    plog = retreive_single_log()  
-    if plog is None:
-        return ("", 204)
-    else: 
-        print 'Here is the logggggg'
-        return retreive_single_log()  
+    # Initiate
+    doStuffStart()
+    # When you kill Flask (SIGTERM), clear the trigger for the next thread
+    atexit.register(interrupt)
+    
+
+
+    @app.route('/')
+    def index():
+        return render_template('index.html')
+
+
+    @app.route('/forward')
+    def forward():
+        print 'moving forwarddddd'
+        commonDataStruct.append(('move_forward', 10)) 
+        return ''
+
+    @app.route('/backward')
+    def backward():
+        print 'moving backwardddddd'
+        commonDataStruct.append(('move_backwards', 10)) 
+        return ''
+
+    @app.route('/left')
+    def left():
+        print 'turning leftttttt'
+        commonDataStruct.append(('turn_right', 45)) 
+        return ''
+
+    @app.route('/right')
+    def right():
+        print 'turning righttttt'
+        commonDataStruct.append(('turn_left', 45)) 
+        return ''
+
+    @app.route('/distance')
+    def distance():
+        print 'Getting distance'
+        commonDataStruct.append(('read_distance', None)) 
+        return ''
+
+    @app.route('/temperature')
+    def temperature():
+        print 'Getting temperature'
+        commonDataStruct.append(('read_temperature', None)) 
+        return ''
+
+    @app.route('/printlog')
+    def print_log():
+        #retreive_remote_log()
+        plog = retreive_single_log()  
+        if plog is None:
+            return ("", 204)
+        else: 
+            print 'Here is the logggggg'
+            return retreive_single_log()  
+    return app
 
 if __name__ == '__main__':
-    app.debug = True
+    print('IN MAIN')
+    app = create_app() 
+    #app.debug = True
     app.run()
