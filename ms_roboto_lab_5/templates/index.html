@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	
+	<title>Ms. Roboto</title>	
+	<!-- Import custom style sheet -->
+	<link rel="stylesheet" type="text/css" href="static/roboto_style.css">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	
+</head>
+<body>
+	<h1>Hello Ms. Roboto!</h1>
+
+	<div class="fbBtn">
+		<button id="forwardBtn" value="forward">Forward</button>
+	</div>
+	<div class="rlBtn">
+			<button id="leftBtn" value="left">Left</button>
+			<button id="rightBtn" value="right">Right</button>
+	</div>
+	<div class="fbBtn">
+		<button id="backBtn" value="backward">Backward</button>
+	</div><br>
+	<div>
+		<button id="distanceBtn" value="distance">Distance</button>
+		<button id="tempBtn" value="temperature">Temperature</button>
+	</div>
+	
+	Log<br>
+	<div id="logOutput">
+	</div>
+</body>
+
+<script>
+function handle(command) {
+	$.ajax({
+      type:'get',
+      url:command
+    });
+}
+
+$("#forwardBtn").on("click", function(){handle("forward");}); 
+
+
+function move_backwards() {
+	handle("backward");
+}
+function turn_left() {
+	handle("left");
+}
+function turn_right() {
+	handle("right");
+}
+function get_distance() {
+	handle("distance");
+}
+function get_temperature() {
+	handle("temperature");
+}
+
+function printLog() {
+	$.ajax ({
+		type:'get',
+		url:'printlog',
+		success: function(data) {
+			if (typeof data !== 'undefined') {	
+				console.log(data);
+				$('#logOutput').text(data);
+			}
+		}
+	});
+}
+window.setInterval(printLog, 100);
+</script>
+
+</html>

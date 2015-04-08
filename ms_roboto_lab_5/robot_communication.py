@@ -10,10 +10,14 @@ class RobotController:
   def __init__(self):
     self._communicator = UDPCommunicator(constants.ROBOT_COMM['ip'],
                                          constants.ROBOT_COMM['port'])
+    
     while not self._communicator.connected:
       try:
         log.log("Connecting to peer")
-        connection_response = self._communicator.connect()
+        #added to fake log 
+        connection_response = self._communicator.connect() #og.log("Error connecting to robot")
+        #self._communicator.connected = True  
+        #log.log("Telling robot to move forward")   
       except socket.timeout:
         log.log("Timed out waiting to connect to the robot. Retrying")
 
@@ -21,7 +25,7 @@ class RobotController:
       log.log("Successfully connected. Robot says: " + connection_response)
     else:
       log.log("Error connecting to robot")
-
+      
   def move_forward(self, amount):
     log.log("Telling robot to move forward")
     command = constants.CMD_CHARS['forward'] + " " + str(amount)
