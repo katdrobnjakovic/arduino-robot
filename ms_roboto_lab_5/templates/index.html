@@ -25,9 +25,9 @@
 		<button id="distanceBtn" value="distance">Distance</button>
 		<button id="tempBtn" value="temperature">Temperature</button>
 	</div>
-	<div>
-		Log<br>
-		<textarea id="logOutput"></textarea>
+	
+	Log<br>
+	<div id="logOutput">
 	</div>
 </body>
 
@@ -65,6 +65,7 @@ function printLog() {
 		success: function(data) {
 			if (typeof data !== 'undefined') {	
 				console.log(data);
+				$('#logOutput').text(data);
 			}
 		}
 	});
