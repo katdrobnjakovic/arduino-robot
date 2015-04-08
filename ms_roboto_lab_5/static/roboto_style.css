@@ -1,8 +1,10 @@
 body {
-	text-align: center;
+  margin: auto 0px;
+  text-align: center;
 }
-
-
+.header {
+  text-align: center;
+}
 
 button {
 	width: 180px;
@@ -14,7 +16,40 @@ button {
 	font-size: 26px;
 }
 
-div {
+.panel {
+  float: left;
+  width: 500px;
+}
+
+.btn-panel {
+  text-align: center;
+}
+
+.btn-panel > div {
+  margin-bottom: 15px;
+}
+
+.current-output {
+  margin-top: 0px;
+}
+
+.log-header {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  font-size: 200%;
+}
+
+#logOutput {
 	min-height: 90px;
+  border: 1px solid #AAA;
+  width: 500px;
+  height: 285px;
+  text-align: left;
+  margin: 0px auto;
+}
+
+.log-entry {
+  margin: 0px;
+  padding: 0px;
 }
 

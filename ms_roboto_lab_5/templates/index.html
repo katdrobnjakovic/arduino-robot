@@ -9,25 +9,36 @@
 	
 </head>
 <body>
-	<h1>Hello Ms. Roboto!</h1>
-
-	<div class="fbBtn">
-		<button id="forwardBtn" value="forward">Forward</button>
+	<div class="header">
+		<h1>Hello Ms. Roboto!</h1>
 	</div>
-	<div class="rlBtn">
+
+	<div class="panel btn-panel">
+		<div>
+			<button id="forwardBtn" value="forward">Forward</button>
+		</div>
+		<div>
 			<button id="leftBtn" value="left">Left</button>
 			<button id="rightBtn" value="right">Right</button>
+		</div>
+		<div>
+			<button id="backBtn" value="backward">Backward</button>
+		</div>
+		<div>
+			<button id="distanceBtn" value="distance">Distance</button>
+			<button id="tempBtn" value="temperature">Temperature</button>
+		</div>
 	</div>
-	<div class="fbBtn">
-		<button id="backBtn" value="backward">Backward</button>
-	</div><br>
-	<div>
-		<button id="distanceBtn" value="distance">Distance</button>
-		<button id="tempBtn" value="temperature">Temperature</button>
-	</div>
-	
-	Log<br>
-	<div id="logOutput">
+	<div class="panel">
+		<h3 class="current-output">Current output</h3>
+		<p class="log-header">Log</p>
+		<div id="logOutput">
+			<div class="log-entry">This is a log entry</div>
+			<div class="log-entry">This is a log entry</div>
+			<div class="log-entry">This is a log entry</div>
+			<div class="log-entry">This is a log entry</div>
+			<div class="log-entry">This is a log entry</div>
+		</div>
 	</div>
 </body>
 
