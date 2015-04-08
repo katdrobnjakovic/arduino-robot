@@ -66,7 +66,7 @@ class RobotController:
         self._receive_response()
         successful = True
       except socket.timeout:
-        pass
+        log.log("Timed out. Retrying")
 
   def _send_once(self, command):
     self._communicator.set_timeout(constants.ROBOT_COMM['timeout'])
@@ -79,8 +79,8 @@ class RobotController:
         + "Please try again.")
 
   def _send_command(self, command):
-    log.log("Sending to robot: " + cmd)
-    self._communicator.send(cmd)
+    log.log("Sending to robot: " + command)
+    self._communicator.send(command)
     log.log("Successfully sent message to robot")
 
   def _receive_response(self):
