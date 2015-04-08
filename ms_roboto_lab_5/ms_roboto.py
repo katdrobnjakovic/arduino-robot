@@ -73,13 +73,13 @@ def create_app():
     @app.route('/left')
     def left():
         print 'turning leftttttt'
-        commonDataStruct.append(('turn_right', 45)) 
+        commonDataStruct.append(('turn_left', 45)) 
         return ''
 
     @app.route('/right')
     def right():
         print 'turning righttttt'
-        commonDataStruct.append(('turn_left', 45)) 
+        commonDataStruct.append(('turn_right', 45)) 
         return ''
 
     @app.route('/distance')

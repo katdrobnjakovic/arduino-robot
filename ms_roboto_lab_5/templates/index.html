@@ -67,7 +67,7 @@ function printLog() {
 		success: function(data) {
 			if (typeof data !== 'undefined') {	
 				console.log(data);
-				$('#logOutput').after("<div class='log-entry'>" + data + "</div>");
+				$('#logOutput').prepend("<div class='log-entry'>" + data + "</div>");
 			}
 		}
 	});
