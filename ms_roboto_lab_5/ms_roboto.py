@@ -19,27 +19,27 @@ def forward():
 @app.route('/backward')
 def backward():
     print 'moving backwardddddd'
-    return 'Moving forward!'
+    return robotComm.move_backwards(10)
 
 @app.route('/left')
 def left():
     print 'turning leftttttt'
-    return 'Turning Left!'
+    return robotComm.turn_right(45)
 
 @app.route('/right')
 def right():
     print 'turning righttttt'
-    return 'Turning right!'
+    return robotComm.turn_left(45)
 
 @app.route('/distance')
 def distance():
     print 'Getting distance'
-    return 'Getting distance!'
+    return robotComm.read_distance()
 
 @app.route('/temperature')
 def temperature():
     print 'Getting temperature'
-    return 'Getting temperature!'
+    return robotComm.read_temperature()
 
 @app.route('/printlog')
 def printlog():

@@ -14,8 +14,10 @@ class RobotController:
     while not self._communicator.connected:
       try:
         log.log("Connecting to peer")
+        #added to fake log 
         connection_response = log.log("Error connecting to robot") #self._communicator.connect()
-        self._communicator.connected = True      
+        self._communicator.connected = True  
+        log.log("Telling robot to move forward")   
       except socket.timeout:
         log.log("Timed out waiting to connect to the robot. Retrying")
 
@@ -23,7 +25,7 @@ class RobotController:
       log.log("Successfully connected. Robot says: " + connection_response)
     else:
       log.log("Error connecting to robot")
-
+      
   def move_forward(self, amount):
     log.log("Telling robot to move forward")
     command = constants.CMD_CHARS['forward'] + " " + str(amount)
