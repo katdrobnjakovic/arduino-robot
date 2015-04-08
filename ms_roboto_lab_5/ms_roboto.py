@@ -6,7 +6,7 @@ from log import retreive_single_log
 
 app = Flask(__name__)
 
-robotComm = RobotController()
+#robotComm = RobotController()
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -14,17 +14,17 @@ def index():
 @app.route('/forward')
 def forward():
     print 'moving forwarddddd'
-    return robotComm.move_forward(10) 
+    return 'MOVING FORWARD' #robotComm.move_forward(10) 
 
 @app.route('/backward')
 def backward():
     print 'moving backwardddddd'
-    return robotComm.move_backwards(10)
+    return 'MOVING BACKWARD' #robotComm.move_backwards(10)
 
 @app.route('/left')
 def left():
     print 'turning leftttttt'
-    return robotComm.turn_right(45)
+    return 'turning leftttttt'#robotComm.turn_right(45)
 
 @app.route('/right')
 def right():
