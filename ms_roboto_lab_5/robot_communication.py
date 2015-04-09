@@ -135,7 +135,7 @@ class RobotController:
   def read_distance(self):
     log.log("Telling robot to measure distance")
     command = constants.CMD_CHARS['distance'] + ""
-    self.last = 't'
+    self.last = 'd'
     self._send_until_successful(command)
 
   """
@@ -156,7 +156,7 @@ class RobotController:
   def read_temperature(self):
     log.log("Telling robot to measure temperature")
     command = constants.CMD_CHARS['temperature']
-    self.test = 'd'
+    self.test = 't'
     self._send_until_successful(command)
 
   def _send_until_successful(self, command):
