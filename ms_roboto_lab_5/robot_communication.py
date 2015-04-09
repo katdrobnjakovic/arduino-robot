@@ -20,7 +20,8 @@ class RobotController:
   def __init__(self):
     self._communicator = UDPCommunicator(constants.ROBOT_COMM['ip'],
                                          constants.ROBOT_COMM['port'])
-    
+    self.last = 'c'
+
     while not self._communicator.connected:
       try:
         log.log("Connecting to peer")
@@ -134,6 +135,7 @@ class RobotController:
   def read_distance(self):
     log.log("Telling robot to measure distance")
     command = constants.CMD_CHARS['distance'] + ""
+    self.last = 't'
     self._send_until_successful(command)
 
   """
@@ -154,6 +156,7 @@ class RobotController:
   def read_temperature(self):
     log.log("Telling robot to measure temperature")
     command = constants.CMD_CHARS['temperature']
+    self.test = 'd'
     self._send_until_successful(command)
 
   def _send_until_successful(self, command):
@@ -196,8 +199,13 @@ class RobotController:
       log.log("Successfully executed movement command")
       return (True, None)
     elif response_flag == constants.CMD_CHARS['result']:
-      log.log("Successfully executed data retrieval command. Result: " 
-        + response[1:])
+      if self.last == 't':
+        log.log("Ambient temperature: " + response[1:] + " degree C")
+      elif self.last == 'd':
+        log.log("Distance to nearest obstacle: " + response[1:] + "cm")
+      else:
+        log.log("Successfully executed data retrieval command. Result: " 
+          + response[1:])
       return (True, response[1:])
     elif response_flag == constants.CMD_CHARS['error']:
       log.log("Error executing command: " + response[1:])
