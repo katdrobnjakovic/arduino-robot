@@ -1,3 +1,17 @@
+"""
+Names: Craig Bryan
+       Kat Drobnjakovic
+
+Course Code: SEG 4145
+Lab Number: 5
+File name: constants.py
+Date: April 9, 2015
+
+Description:
+A set of constants used for the robot commands, network communication, 
+and logging
+""" 
+
 CMD_CHARS = {
   'forward': 'f',
   'backwards': 'b',

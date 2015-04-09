@@ -1,12 +1,22 @@
+"""
+Names: Craig Bryan
+       Kat Drobnjakovic
+
+Course Code: SEG 4145
+Lab Number: 5
+File name: ms_roboto
+Date: April 9, 2015
+
+Description:
+The robot controller translates the commands into the command strings the robot can understand
+  and sends them to the robot using a UDPCommunicator 
+""" 
 import socket
 import constants
 import log
 
 class RobotController:
-  """
-  Translates the commands into the command strings the robot can understand
-  and sends them to the robot using a UDPCommunicator
-  """ 
+  
   def __init__(self):
     self._communicator = UDPCommunicator(constants.ROBOT_COMM['ip'],
                                          constants.ROBOT_COMM['port'])

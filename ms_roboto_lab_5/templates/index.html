@@ -1,3 +1,15 @@
+<!--
+Names: Craig Bryan
+       Kat Drobnjakovic
+
+Course Code: SEG 4145
+Lab Number: 5
+File name: index.html
+Date: April 9, 2015
+
+Description:
+The html tempalte for the web app. Renders the graphical user interface and implements AJAX requests.
+--> 
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,6 +17,7 @@
 	<title>Ms. Roboto</title>	
 	<!-- Import custom style sheet -->
 	<link rel="stylesheet" type="text/css" href="static/roboto_style.css">
+	<!-- Import jQuery -->
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	
 </head>
@@ -37,6 +50,27 @@
 </body>
 
 <script>
+/************************************************************************
+*
+* Name
+* *************
+* handle
+*
+* Description
+* *************
+* Takes the incoming command string and sends an AJAX request to the 
+* Python Flask server.
+*
+* Parameters
+* *************
+* command - the incoming command string
+*
+* Returns
+* *************
+* Void
+*
+*
+*************************************************************************/ 
 function handle(command) {
 	$.ajax({
       type:'get',
@@ -47,6 +81,8 @@ function handle(command) {
     });
 }
 
+//When the robot commands are clicked call the handle function with 
+//the appropriate command
 $("#forwardBtn").on("click", function(){handle("forward");}); 
 $("#backBtn").on("click", function(){handle("backward");}); 
 $("#leftBtn").on("click", function(){handle("left");}); 
@@ -54,6 +90,27 @@ $("#rightBtn").on("click", function(){handle("right");});
 $("#distanceBtn").on("click", function(){handle("distance");}); 
 $("#tempBtn").on("click", function(){handle("temperature");}); 
 
+/************************************************************************
+*
+* Name
+* *************
+* printLog
+*
+* Description
+* *************
+* Gets the output log via an AJAX requests and prints it as a div entry
+* to the front end view. 
+*
+* Parameters
+* *************
+* None
+*
+* Returns
+* *************
+* Void
+*
+*
+*************************************************************************/ 
 function printLog() {
 	$.ajax ({
 		type:'get',
@@ -66,6 +123,8 @@ function printLog() {
 		}
 	});
 }
+
+//execute printLog every 1s to display the log in the view
 window.setInterval(printLog, 1000);
 </script>
 

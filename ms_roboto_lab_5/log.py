@@ -1,3 +1,16 @@
+"""
+Names: Craig Bryan
+       Kat Drobnjakovic
+
+Course Code: SEG 4145
+Lab Number: 5
+File name: log.py
+Date: April 9, 2015
+
+Description:
+Methods used to create log messages to be displayed with their timestamp 
+""" 
+
 import constants
 import time
 import datetime
