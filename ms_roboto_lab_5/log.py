@@ -42,7 +42,7 @@ def log(message):
     _local_log(message)
 
   if constants.LOGGING['remote_log']:
-    _remote_log("DUMBY LOG")
+    _remote_log("Total Hack") #skipping every other message so we added a hack message to be skipped instead
     _remote_log(message)
 
 """
@@ -61,12 +61,9 @@ The first log.
 def retreive_single_log():
   with log_lock:
     if remote_backlog:
-      print("BEFORE SINGLE LOG")
       single_log = remote_backlog.pop(0)
-      print("THIS IS THE SINGLE LOG" + single_log)
       return single_log
     else:
-      print("EMPTY LOG")
       return None
     
 
@@ -101,7 +98,6 @@ Void
 """
 def _remote_log(message):
   with log_lock:
-    print("Adding message to log")
     remote_backlog.append(message)
 
 """
