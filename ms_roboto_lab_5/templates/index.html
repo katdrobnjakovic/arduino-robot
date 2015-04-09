@@ -40,28 +40,19 @@
 function handle(command) {
 	$.ajax({
       type:'get',
-      url:command
+      url:command,
+      success: function(data) {
+      	console.log(data);
+      }
     });
 }
 
 $("#forwardBtn").on("click", function(){handle("forward");}); 
-
-
-function move_backwards() {
-	handle("backward");
-}
-function turn_left() {
-	handle("left");
-}
-function turn_right() {
-	handle("right");
-}
-function get_distance() {
-	handle("distance");
-}
-function get_temperature() {
-	handle("temperature");
-}
+$("#backBtn").on("click", function(){handle("backward");}); 
+$("#leftBtn").on("click", function(){handle("left");}); 
+$("#rightBtn").on("click", function(){handle("right");}); 
+$("#distanceBtn").on("click", function(){handle("distance");}); 
+$("#tempBtn").on("click", function(){handle("temperature");}); 
 
 function printLog() {
 	$.ajax ({
@@ -70,12 +61,12 @@ function printLog() {
 		success: function(data) {
 			if (typeof data !== 'undefined') {	
 				console.log(data);
-				$('#logOutput').text(data);
+				$('#logOutput').prepend("<div class='log-entry'>" + data + "</div>");
 			}
 		}
 	});
 }
-window.setInterval(printLog, 100);
+window.setInterval(printLog, 1000);
 </script>
 
 </html>
