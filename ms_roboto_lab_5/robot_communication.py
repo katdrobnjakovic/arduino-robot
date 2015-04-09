@@ -103,11 +103,11 @@ class RobotController:
       return (True, None)
     elif response_flag == constants.CMD_CHARS['result']:
       log.log("Successfully executed data retrieval command. Result: " 
-        + response.split(" ")[1])
-      return (True, response.split(" ")[1])
+        + response)
+      return (True, response)
     elif response_flag == constants.CMD_CHARS['error']:
-      log.log("Error executing command: " + response.split(" ")[1])
-      return (False, response.split(" ")[1])
+      log.log("Error executing command: " )
+      return (False, None)
     else:
       log.log("Unknown response: " + response)
       return (False, None)

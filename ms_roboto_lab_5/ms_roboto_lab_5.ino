@@ -97,7 +97,7 @@ WIFI_PROFILE wireless_prof = {
           /* Gateway IP */ "10.136.160.1", };
 
 //TODO PUT IN COMPUTER IP
-String remote_server = "10.5.121.119"; // peer device IP address
+String remote_server = "10.5.121.245"; // peer device IP address
 
 String remote_port = "32114"; // arbitrary port
 
