@@ -186,6 +186,10 @@ class RobotController:
   def _receive_response(self):
     log.log("Receiving response")
     response = self._communicator.receive()
+    if response is None:
+      log.log("No response received. Packet must've been lost")
+      return (False, None)
+
     response_flag = response.split(" ")[0]
     
     if response_flag == constants.CMD_CHARS['success']:
@@ -193,11 +197,11 @@ class RobotController:
       return (True, None)
     elif response_flag == constants.CMD_CHARS['result']:
       log.log("Successfully executed data retrieval command. Result: " 
-        + response.split(" ")[1])
-      return (True, response.split(" ")[1])
+        + response[1:])
+      return (True, response[1:])
     elif response_flag == constants.CMD_CHARS['error']:
-      log.log("Error executing command: " + response.split(" ")[1])
-      return (False, response.split(" ")[1])
+      log.log("Error executing command: " + response[1:])
+      return (False, response[1:])
     else:
       log.log("Unknown response: " + response)
       return (False, None)
