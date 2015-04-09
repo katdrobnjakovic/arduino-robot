@@ -16,14 +16,25 @@ import time
 import datetime
 import threading
 
+#lock for the log thread
 log_lock = threading.Lock()
 remote_backlog = []
 
+"""
+Name
+log
+
+Description
+This is here to allow simple logging on both the local server and the
+website with timestamps.
+
+Parameters
+message - the log
+
+Returns
+Void 
+"""
 def log(message):
-  """
-  This is here to allow simple logging on both the local server and the
-  website with timestamps (required by the lab).
-  """
   if constants.LOGGING['timestamps_enabled']:
     message = _append_timestamp(message)
 
@@ -33,6 +44,19 @@ def log(message):
   if constants.LOGGING['remote_log']:
     _remote_log(message)
 
+"""
+Name
+log
+
+Description
+Gets the first log.
+
+Parameters
+None
+
+Returns
+The first log. 
+"""
 def retreive_single_log():
   try:
     with log_lock:
@@ -41,13 +65,52 @@ def retreive_single_log():
   except IndexError:
     return None
 
+"""
+Name
+log
+
+Description
+Prints the log to the local server.
+
+Parameters
+message - the log
+
+Returns
+Void
+"""
 def _local_log(message):
   print(message)
 
+"""
+Name
+log
+
+Description
+Adds a new log to the remote_backlog
+
+Parameters
+message - the log
+
+Returns
+Void
+"""
 def _remote_log(message):
   with log_lock:
     remote_backlog.append(message)
 
+"""
+Name
+log
+
+Description
+Appends the timestamp to the log
+
+Parameters
+message - the log
+
+Returns
+Returns the log with its timestamp  
+"""
 def _append_timestamp(message):
   st = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
   return st + ": " + message 
