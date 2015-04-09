@@ -36,31 +36,121 @@ class RobotController:
     else:
       log.log("Error connecting to robot")
       
+  """
+  Name
+  move_forward
+
+  Description
+  Sends a move forward command to the robot via the UDP communication protocol
+
+  Parameters
+  Amount - the number of centimeters to move forward
+
+  Returns
+  A tuple in the form (Boolean, String/None). The boolean is true if the command
+  was successful, false otherwise. The String contains the message from the
+  robot, or an error message
+  """
   def move_forward(self, amount):
     log.log("Telling robot to move forward")
     command = constants.CMD_CHARS['forward'] + " " + str(amount)
     self._send_once(command)
 
+  """
+  Name
+  move_backwards
+
+  Description
+  Sends a move backwards command to the robot via the UDP communication protocol
+
+  Parameters
+  Amount - the number of centimeters to move backwards
+
+  Returns
+  A tuple in the form (Boolean, String/None). The boolean is true if the command
+  was successful, false otherwise. The String contains the message from the
+  robot, or an error message
+  """
   def move_backwards(self, amount):
     log.log("Telling robot to move backwards")
     command = constants.CMD_CHARS['backwards'] + " " + str(amount)
     self._send_once(command)
 
+  """
+  Name
+  turn_right
+
+  Description
+  Sends a turn right command to the robot via the UDP communication protocol
+
+  Parameters
+  Amount - the number of degrees to turn clockwise
+
+  Returns
+  A tuple in the form (Boolean, String/None). The boolean is true if the command
+  was successful, false otherwise. The String contains the message from the
+  robot, or an error message
+  """
   def turn_right(self, amount):
     log.log("Telling robot to turn right")
     command = constants.CMD_CHARS['right'] + " " + str(amount)
     self._send_once(command)
 
+  """
+  Name
+  turn_left
+
+  Description
+  Sends a turn left command to the robot via the UDP communication protocol
+
+  Parameters
+  Amount - the number of degrees to turn counter clockwise
+
+  Returns
+  A tuple in the form (Boolean, String/None). The boolean is true if the command
+  was successful, false otherwise. The String contains the message from the
+  robot, or an error message
+  """
   def turn_left(self, amount):
     log.log("Telling robot to turn left")
     command = constants.CMD_CHARS['left'] + " " + str(amount)
     self._send_once(command)
 
+  """
+  Name
+  read_distance
+
+  Description
+  Sends a read distance to the robot via the UDP communication protocol
+
+  Parameters
+  None
+
+  Returns
+  A tuple in the form (Boolean, String/None). The boolean is true if the command
+  was successful, false otherwise. The String contains the message from the
+  robot, or an error message
+  """
   def read_distance(self):
     log.log("Telling robot to measure distance")
     command = constants.CMD_CHARS['distance'] + ""
     self._send_until_successful(command)
 
+  """
+  Name
+  read_temperature
+
+  Description
+  Sends a read temperature to the robot via the UDP communication protocol
+
+  Parameters
+  None
+
+  Returns
+  A tuple in the form (Boolean, String/None). The boolean is true if the command
+  was successful, false otherwise. The String contains the message from the
+  robot, or an error message
+  """
   def read_temperature(self):
     log.log("Telling robot to measure temperature")
     command = constants.CMD_CHARS['temperature']
@@ -96,6 +186,10 @@ class RobotController:
   def _receive_response(self):
     log.log("Receiving response")
     response = self._communicator.receive()
+    if response is None:
+      log.log("No response received. Packet must've been lost")
+      return (False, None)
+
     response_flag = response.split(" ")[0]
     
     if response_flag == constants.CMD_CHARS['success']:
@@ -103,11 +197,11 @@ class RobotController:
       return (True, None)
     elif response_flag == constants.CMD_CHARS['result']:
       log.log("Successfully executed data retrieval command. Result: " 
-        + response)
-      return (True, response)
+        + response[1:])
+      return (True, response[1:])
     elif response_flag == constants.CMD_CHARS['error']:
-      log.log("Error executing command: " )
-      return (False, None)
+      log.log("Error executing command: " + response[1:])
+      return (False, response[1:])
     else:
       log.log("Unknown response: " + response)
       return (False, None)
@@ -121,6 +215,20 @@ class UDPCommunicator:
     self._port = initial_port
     self.connected = False
 
+  """
+  Name
+  connect
+
+  Description
+  Establishes communication with the robot. It waits and retries until the
+  robot sends a message.
+
+  Parameters
+  None
+
+  Returns
+  None
+  """
   def connect(self):
     if self.connected:
       return None
@@ -138,10 +246,37 @@ class UDPCommunicator:
     self.connected = True
     return data
 
+  """
+  Name
+  send
+
+  Description
+  Sends a message to ther robot over UDP 
+
+  Parameters
+  Message - the message to send to the robot
+
+  Returns
+  None
+  """
   def send(self, message):
     self._ensure_connected()
     self._send_to_peer(message)
 
+  """
+  Name
+  receive
+
+  Description
+  Waits for a message from the robot, sent over UDP. Will timeout if waiting 
+  too long. 
+
+  Parameters
+  Message - the message to send to the robot
+
+  Returns
+  None
+  """
   def receive(self):
     msg = self._receive_from_peer()
     return msg[0] #msg is a tuple of (data, addr)
