@@ -153,8 +153,6 @@ void setup() {
   } else {
     Serial.println("Done setup");
   }
-
-  displayBlink();
 }
 
 void loop() {

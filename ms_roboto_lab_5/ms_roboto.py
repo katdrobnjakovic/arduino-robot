@@ -271,12 +271,14 @@ def create_app():
     The single log output to display in the view.  
     """
     @app.route('/printlog')
-    def print_log():
+    def printlog():
+        print("CALLING PRING LOG")
         p_log = retreive_single_log()  
         if p_log is None:
             return ("", 204)
         else: 
             return retreive_single_log()  
+    
     return app
 
 if __name__ == '__main__':

@@ -17,7 +17,7 @@ import datetime
 import threading
 
 #lock for the log thread
-log_lock = threading.Lock()
+log_lock = threading.RLock()
 remote_backlog = []
 
 """
@@ -42,6 +42,7 @@ def log(message):
     _local_log(message)
 
   if constants.LOGGING['remote_log']:
+    _remote_log("DUMBY LOG")
     _remote_log(message)
 
 """
@@ -58,12 +59,16 @@ Returns
 The first log. 
 """
 def retreive_single_log():
-  try:
-    with log_lock:
+  with log_lock:
+    if remote_backlog:
+      print("BEFORE SINGLE LOG")
       single_log = remote_backlog.pop(0)
-    return single_log
-  except IndexError:
-    return None
+      print("THIS IS THE SINGLE LOG" + single_log)
+      return single_log
+    else:
+      print("EMPTY LOG")
+      return None
+    
 
 """
 Name
@@ -96,6 +101,7 @@ Void
 """
 def _remote_log(message):
   with log_lock:
+    print("Adding message to log")
     remote_backlog.append(message)
 
 """
